@@ -1,0 +1,2057 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
+<meta name="theme-color" content="#e87a2e" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<title>🎯 4人 Bingo 挑戰賽｜2026/7/19 結算</title>
+<style>
+  :root {
+    --bg-1: #fdeadb;
+    --bg-2: #fff4ea;
+    --bg-3: #ffe5cf;
+    --card: #ffffff;
+    --text: #1a1a1a;
+    --text-soft: #5a5a5a;
+    --muted: #a0a0a0;
+    --border: #ece6df;
+    --coral: #e87a2e;
+    --peach: #f5a35a;
+    --yellow: #ffc94d;
+    --mint: #e87a2e;
+    --sky: #d6641c;
+    --lavender: #f5a35a;
+    --orange: #e87a2e;
+    --orange-dark: #c85e1a;
+    --success: #5bb86a;
+    --shadow: 0 6px 20px rgba(232, 122, 46, 0.12);
+    --shadow-lg: 0 14px 36px rgba(232, 122, 46, 0.20);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: "Bebas Neue", "Nunito", "Noto Sans TC", -apple-system, BlinkMacSystemFont, "PingFang TC", "Microsoft JhengHei", sans-serif;
+    background: #fdeadb;
+    background-image:
+      radial-gradient(circle at 20% 20%, rgba(232, 122, 46, 0.08) 1px, transparent 1px),
+      radial-gradient(circle at 80% 60%, rgba(232, 122, 46, 0.08) 1px, transparent 1px);
+    background-size: 24px 24px, 32px 32px;
+    color: var(--text);
+    min-height: 100vh;
+    padding: 0;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* 背景漫畫速度線 */
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0; right: 0;
+    width: 100%; height: 100%;
+    background-image:
+      repeating-linear-gradient(135deg, transparent 0px, transparent 60px, rgba(232, 122, 46, 0.03) 60px, rgba(232, 122, 46, 0.03) 61px);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px 16px 40px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ===== 頂部導航 ===== */
+  .topnav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    padding: 0 4px;
+  }
+
+  .logo {
+    background: var(--orange);
+    color: white;
+    padding: 10px 14px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    font-size: 0.75rem;
+    line-height: 1;
+    border-radius: 4px;
+    box-shadow: 4px 4px 0 var(--orange-dark);
+  }
+
+  .logo .logo-big { font-size: 1.1rem; display: block; }
+
+  .nav-links {
+    display: flex;
+    gap: 22px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: 0.5px;
+  }
+
+  .nav-links span { cursor: default; }
+  .nav-links .active { color: var(--orange); text-decoration: underline; text-underline-offset: 4px; }
+
+  /* ===== Hero ===== */
+  .hero {
+    position: relative;
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: 28px;
+    box-shadow: var(--shadow-lg);
+    min-height: 360px;
+  }
+
+  .hero-orange-panel {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 42%;
+    background: linear-gradient(135deg, var(--orange) 0%, #f59a4a 100%);
+    clip-path: polygon(0 0, 100% 0, 80% 100%, 0 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .hero-orange-panel::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle, rgba(255,255,255,0.18) 1.5px, transparent 1.5px);
+    background-size: 12px 12px;
+    mix-blend-mode: overlay;
+  }
+
+  .hero-avatars {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    padding: 20px;
+  }
+
+  .hero-avatars svg {
+    width: 90px;
+    height: 90px;
+    background: white;
+    border-radius: 50%;
+    padding: 6px;
+    border: 3px solid white;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  }
+
+  .hero-content {
+    position: relative;
+    margin-left: 40%;
+    padding: 40px 32px;
+    z-index: 1;
+  }
+
+  .hero-eyebrow {
+    display: inline-block;
+    background: var(--orange);
+    color: white;
+    padding: 4px 12px;
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    font-weight: 900;
+    margin-bottom: 14px;
+    border-radius: 2px;
+  }
+
+  h1 {
+    font-size: 2.2rem;
+    font-weight: 900;
+    color: var(--text);
+    margin-bottom: 10px;
+    letter-spacing: -0.5px;
+    line-height: 1.1;
+    text-transform: uppercase;
+  }
+
+  h1 .hl { color: var(--orange); }
+
+  .tagline {
+    color: var(--text-soft);
+    font-size: 0.95rem;
+    margin-bottom: 20px;
+    max-width: 440px;
+  }
+
+  .hero-cta {
+    display: inline-block;
+    background: var(--orange);
+    color: white;
+    padding: 10px 28px;
+    border-radius: 999px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    font-size: 0.85rem;
+    box-shadow: 0 6px 16px rgba(232, 122, 46, 0.4);
+    cursor: pointer;
+    border: none;
+    font-family: inherit;
+  }
+
+  /* 倒數計時器 */
+  .countdown-box {
+    background: white;
+    border-radius: 20px;
+    padding: 20px 24px;
+    box-shadow: var(--shadow);
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    position: relative;
+    overflow: hidden;
+    border-left: 6px solid var(--orange);
+  }
+
+  .countdown-left {
+    flex: 1;
+    min-width: 160px;
+  }
+
+  .countdown-label {
+    font-size: 0.7rem;
+    color: var(--orange);
+    margin-bottom: 4px;
+    letter-spacing: 2px;
+    font-weight: 900;
+  }
+
+  .countdown-target {
+    font-size: 1.6rem;
+    color: var(--text);
+    font-weight: 900;
+    letter-spacing: -0.5px;
+  }
+
+  .countdown-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    flex: 2;
+    min-width: 280px;
+  }
+
+  .time-block {
+    background: var(--bg-1);
+    border-radius: 10px;
+    padding: 12px 6px;
+    text-align: center;
+    border: 2px solid var(--orange);
+  }
+
+  .time-block .num {
+    font-size: 1.8rem;
+    font-weight: 900;
+    color: var(--orange);
+    line-height: 1;
+    font-family: "Bebas Neue", sans-serif;
+  }
+
+  .time-block .lbl {
+    font-size: 0.7rem;
+    color: var(--text-soft);
+    margin-top: 4px;
+    font-weight: 700;
+    letter-spacing: 1px;
+  }
+
+  /* 玩家卡片 */
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    padding: 0 4px;
+  }
+
+  .section-title {
+    font-size: 1.6rem;
+    font-weight: 900;
+    color: var(--text);
+    letter-spacing: -0.5px;
+    text-transform: uppercase;
+  }
+
+  .section-title .hl { color: var(--orange); }
+
+  .section-chip {
+    background: var(--orange);
+    color: white;
+    padding: 4px 12px;
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    font-weight: 900;
+    border-radius: 2px;
+  }
+
+  .players-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+
+  .player-card {
+    background: white;
+    border-radius: 14px;
+    padding: 16px 14px 18px;
+    box-shadow: var(--shadow);
+    cursor: pointer;
+    transition: all 0.25s ease;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    border: 2px solid var(--border);
+  }
+
+  .player-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--orange);
+  }
+
+  .player-card::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 70px;
+    background: var(--orange);
+    clip-path: polygon(0 0, 100% 0, 100% 60%, 0 100%);
+  }
+
+  .player-card::after {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 70px;
+    background-image: radial-gradient(circle, rgba(255,255,255,0.25) 1px, transparent 1px);
+    background-size: 8px 8px;
+    clip-path: polygon(0 0, 100% 0, 100% 60%, 0 100%);
+  }
+
+  .avatar-display {
+    width: 76px; height: 76px;
+    margin: 0 auto 10px;
+    background: white;
+    border-radius: 50%;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
+    border: 3px solid white;
+  }
+
+  .avatar-display svg {
+    width: 62px; height: 62px;
+  }
+
+  .avatar-placeholder {
+    font-size: 1.8rem;
+    color: var(--muted);
+    font-weight: 900;
+  }
+
+  .player-name {
+    font-size: 1.15rem;
+    font-weight: 900;
+    margin-bottom: 4px;
+    color: var(--text);
+    letter-spacing: 0.5px;
+  }
+
+  .player-meta {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    font-size: 0.7rem;
+    color: var(--text-soft);
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+
+  .player-meta .sep { color: var(--orange); }
+
+  .player-status {
+    font-size: 0.75rem;
+    color: var(--text-soft);
+    font-weight: 600;
+  }
+
+  .player-lines {
+    display: inline-block;
+    margin-top: 8px;
+    padding: 4px 12px;
+    background: var(--orange);
+    color: white;
+    border-radius: 4px;
+    font-weight: 900;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+  }
+
+  .player-pet-name {
+    font-size: 0.7rem;
+    color: var(--muted);
+    margin-top: 6px;
+    font-style: italic;
+  }
+
+  /* 規則說明 */
+  .rules-card {
+    background: white;
+    border-radius: 16px;
+    padding: 22px 24px;
+    box-shadow: var(--shadow);
+    margin-bottom: 24px;
+    border-left: 6px solid var(--orange);
+  }
+
+  .rules-card h3 {
+    font-size: 1.1rem;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 900;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  .rules-card ol {
+    padding-left: 22px;
+    color: var(--text-soft);
+    font-size: 0.9rem;
+  }
+
+  .rules-card li { margin-bottom: 6px; }
+
+  .rules-card strong { color: var(--orange); font-weight: 900; }
+
+  /* ===== 玩家頁 ===== */
+  .player-view { display: none; }
+  .player-view.active { display: block; }
+  .home-view.hidden { display: none; }
+
+  .back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: white;
+    border: 2px solid var(--orange);
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 900;
+    color: var(--orange);
+    cursor: pointer;
+    margin-bottom: 16px;
+    font-family: inherit;
+    letter-spacing: 1px;
+  }
+
+  .back-btn:hover { background: var(--orange); color: white; }
+
+  .player-header {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    margin-bottom: 20px;
+    position: relative;
+    min-height: 180px;
+    display: flex;
+    align-items: center;
+  }
+
+  .player-header::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 50%;
+    background: linear-gradient(135deg, var(--orange) 0%, #f59a4a 100%);
+    clip-path: polygon(0 0, 100% 0, 85% 100%, 0 100%);
+  }
+
+  .player-header::after {
+    content: "";
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 50%;
+    clip-path: polygon(0 0, 100% 0, 85% 100%, 0 100%);
+    background-image: radial-gradient(circle, rgba(255,255,255,0.2) 1.5px, transparent 1.5px);
+    background-size: 12px 12px;
+  }
+
+  .current-avatar {
+    width: 130px; height: 130px;
+    margin: 20px 20px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+    border: 5px solid white;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 2;
+  }
+
+  .current-avatar svg {
+    width: 110px; height: 110px;
+  }
+
+  .player-header-info {
+    position: relative;
+    z-index: 2;
+    padding: 20px 20px 20px 0;
+    flex: 1;
+  }
+
+  .player-name-big {
+    font-size: 2.2rem;
+    font-weight: 900;
+    margin-bottom: 4px;
+    color: var(--text);
+    letter-spacing: -1px;
+    line-height: 1;
+  }
+
+  .player-tag-row {
+    display: flex;
+    gap: 14px;
+    font-size: 0.75rem;
+    color: var(--text-soft);
+    font-weight: 700;
+    margin: 8px 0 12px;
+    letter-spacing: 0.5px;
+  }
+
+  .player-tag-row .sep { color: var(--orange); }
+  .player-tag-row .key { color: var(--orange); font-weight: 900; }
+
+  .pet-label {
+    color: var(--text-soft);
+    font-size: 0.85rem;
+    margin-bottom: 10px;
+    font-style: italic;
+  }
+
+  .change-pet-btn {
+    background: var(--orange);
+    border: none;
+    padding: 7px 16px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    color: white;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 900;
+    letter-spacing: 1px;
+    box-shadow: 3px 3px 0 var(--orange-dark);
+  }
+
+  .change-pet-btn:hover { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 var(--orange-dark); }
+
+  /* 寵物選擇器 */
+  .pet-picker {
+    background: white;
+    border-radius: 16px;
+    padding: 22px;
+    box-shadow: var(--shadow);
+    margin-bottom: 20px;
+    border-top: 6px solid var(--orange);
+  }
+
+  .pet-picker h3 {
+    text-align: center;
+    margin-bottom: 6px;
+    font-size: 1.3rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .pet-picker .sub {
+    text-align: center;
+    color: var(--text-soft);
+    font-size: 0.8rem;
+    margin-bottom: 16px;
+    font-style: italic;
+  }
+
+  .pet-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+  }
+
+  .pet-option {
+    background: var(--bg-1);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 8px 4px;
+    position: relative;
+    min-height: 108px;
+  }
+
+  .pet-option:hover {
+    transform: translateY(-2px);
+    border-color: var(--orange);
+    background: white;
+  }
+
+  .pet-option.selected {
+    border-color: var(--orange);
+    background: white;
+    box-shadow: 0 4px 10px rgba(232, 122, 46, 0.25);
+  }
+
+  .pet-option.selected::after {
+    content: "✓";
+    position: absolute;
+    top: 4px; right: 6px;
+    background: var(--orange);
+    color: white;
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    font-size: 0.7rem;
+    font-weight: 900;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .pet-option svg {
+    width: 70%; height: 60px;
+  }
+
+  .pet-option .name {
+    font-size: 0.68rem;
+    color: var(--text);
+    margin-top: 4px;
+    text-align: center;
+    line-height: 1.1;
+    font-weight: 700;
+  }
+
+  .pet-option .meme {
+    font-size: 0.58rem;
+    color: var(--orange);
+    margin-top: 1px;
+    text-align: center;
+    line-height: 1;
+    font-weight: 900;
+    letter-spacing: 0.3px;
+  }
+
+  /* Bingo 區 */
+  .bingo-panel {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: var(--shadow);
+    margin-bottom: 20px;
+    border-top: 6px solid var(--orange);
+  }
+
+  .bingo-panel h3 {
+    font-size: 1.3rem;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .stage-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    background: var(--bg-1);
+    color: var(--orange);
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 900;
+    letter-spacing: 1px;
+    border: 2px solid var(--orange);
+  }
+
+  .stage-badge.locked {
+    background: var(--orange);
+    color: white;
+  }
+
+  .status-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--bg-1);
+    padding: 12px 16px;
+    border-radius: 10px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    gap: 10px;
+    border-left: 4px solid var(--orange);
+  }
+
+  .lines-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 900;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .lines-num {
+    background: var(--orange);
+    color: white;
+    padding: 4px 14px;
+    border-radius: 4px;
+    font-size: 0.95rem;
+    font-family: "Bebas Neue", sans-serif;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .cell {
+    aspect-ratio: 1;
+    background: #fffaf3;
+    border: 2px solid var(--border);
+    border-radius: 14px;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+    user-select: none;
+    box-shadow: 0 2px 6px rgba(232, 122, 46, 0.06);
+  }
+
+  .cell:hover:not(.locked) {
+    border-color: var(--orange);
+    transform: translateY(-1px);
+  }
+
+  /* textarea 真正垂直+水平置中的寫法 */
+  .cell textarea {
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border: none;
+    color: var(--text);
+    font-size: 1rem;
+    text-align: center;
+    resize: none;
+    font-family: inherit;
+    line-height: 1.35;
+    font-weight: 700;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    /* flex 對 textarea 幫助不大，用 padding-top 動態補 */
+  }
+
+  .cell textarea:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.6);
+  }
+
+  .cell textarea::placeholder {
+    color: #c8b8a0;
+    font-weight: 600;
+  }
+
+  .cell .text-display {
+    font-size: 1rem;
+    word-break: break-word;
+    line-height: 1.35;
+    max-height: 100%;
+    overflow: hidden;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+  }
+
+  .cell.center {
+    background: linear-gradient(135deg, var(--orange), #f59a4a);
+    border-color: var(--orange);
+  }
+
+  .cell.center textarea, .cell.center .text-display {
+    color: white;
+  }
+
+  .cell.center textarea::placeholder {
+    color: rgba(255,255,255,0.85);
+  }
+
+  .cell.checked {
+    background: var(--orange);
+    border-color: var(--orange-dark);
+  }
+
+  .cell.checked .text-display {
+    color: white;
+  }
+
+  .cell.checked::after {
+    content: "✓";
+    position: absolute;
+    top: 4px;
+    right: 6px;
+    color: white;
+    font-weight: 900;
+    font-size: 1rem;
+    background: var(--orange-dark);
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .cell.in-line {
+    box-shadow: 0 0 0 3px var(--yellow), 0 0 16px rgba(255, 201, 77, 0.6);
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+  }
+
+  .controls {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  button {
+    flex: 1;
+    min-width: 110px;
+    padding: 12px 16px;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 900;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    font-family: inherit;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .btn-primary {
+    background: var(--orange);
+    color: white;
+    box-shadow: 4px 4px 0 var(--orange-dark);
+  }
+
+  .btn-primary:hover:not(:disabled) {
+    transform: translate(-1px, -1px);
+    box-shadow: 5px 5px 0 var(--orange-dark);
+  }
+
+  .btn-secondary {
+    background: white;
+    color: var(--text);
+    border: 2px solid var(--border);
+  }
+
+  .btn-secondary:hover:not(:disabled) {
+    border-color: var(--orange);
+    color: var(--orange);
+  }
+
+  .btn-warning {
+    background: var(--yellow);
+    color: var(--text);
+    box-shadow: 4px 4px 0 #c89a20;
+  }
+
+  .btn-warning:hover:not(:disabled) {
+    transform: translate(-1px, -1px);
+    box-shadow: 5px 5px 0 #c89a20;
+  }
+
+  button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .notice {
+    font-size: 0.85rem;
+    color: var(--text-soft);
+    padding: 12px 14px;
+    background: var(--bg-1);
+    border-left: 4px solid var(--orange);
+    border-radius: 4px;
+    margin-top: 14px;
+  }
+
+  .toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--text);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 14px;
+    box-shadow: var(--shadow-lg);
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s;
+    z-index: 1000;
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  footer {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.8rem;
+    margin-top: 32px;
+    padding-bottom: 10px;
+  }
+
+  /* ===== Tablet (≤ 900px) ===== */
+  @media (max-width: 900px) {
+    .container { padding: 16px 14px 40px; }
+    .hero-orange-panel { width: 40%; }
+    .hero-content { margin-left: 38%; padding: 32px 24px; }
+    h1 { font-size: 1.8rem; }
+    .hero-avatars svg { width: 70px; height: 70px; }
+    .countdown-box { padding: 18px 20px; gap: 16px; }
+    .countdown-target { font-size: 1.3rem; }
+    .time-block .num { font-size: 1.5rem; }
+  }
+
+  /* ===== Mobile (≤ 680px) ===== */
+  @media (max-width: 680px) {
+    body { font-size: 15px; }
+    .container { padding: 14px 12px 32px; }
+
+    /* 導航 */
+    .topnav { margin-bottom: 16px; }
+    .logo { font-size: 0.7rem; padding: 8px 10px; }
+    .logo .logo-big { font-size: 0.95rem; }
+    .nav-links { gap: 10px; font-size: 0.65rem; }
+
+    /* Hero 變直式 */
+    .hero { display: flex; flex-direction: column; min-height: auto; margin-bottom: 20px; }
+    .hero-orange-panel {
+      position: relative;
+      width: 100%;
+      clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+      padding: 24px 20px 36px;
+      min-height: auto;
+    }
+    .hero-avatars { grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 0; }
+    .hero-avatars svg,
+    .hero-avatars img,
+    .hero-avatars > div > div:first-child { width: 58px !important; height: 58px !important; }
+    .hero-avatars > div > div:last-child { font-size: 0.65rem !important; }
+    .hero-content { margin-left: 0; padding: 20px 20px 28px; }
+    h1 { font-size: 1.6rem; line-height: 1.1; }
+    .hero-eyebrow { font-size: 0.65rem; padding: 3px 10px; }
+    .tagline { font-size: 0.85rem; }
+    .hero-cta { padding: 9px 22px; font-size: 0.8rem; }
+
+    /* 倒數 */
+    .countdown-box {
+      flex-direction: column;
+      align-items: stretch;
+      text-align: center;
+      padding: 16px;
+      border-left-width: 0;
+      border-top: 6px solid var(--orange);
+    }
+    .countdown-left { text-align: center; }
+    .countdown-target { font-size: 1.2rem; }
+    .countdown-grid { grid-template-columns: repeat(4, 1fr); gap: 6px; }
+    .time-block { padding: 10px 4px; }
+    .time-block .num { font-size: 1.4rem; }
+    .time-block .lbl { font-size: 0.6rem; }
+
+    /* 區塊標題 */
+    .section-title { font-size: 1.2rem; }
+    .section-chip { font-size: 0.6rem; padding: 3px 8px; letter-spacing: 1px; }
+
+    /* 玩家卡片 2 欄 */
+    .players-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 22px; }
+    .player-card { padding: 14px 10px 14px; border-radius: 12px; }
+    .player-card::before, .player-card::after { height: 52px; }
+    .avatar-display { width: 64px; height: 64px; margin-bottom: 8px; }
+    .avatar-display svg, .avatar-display img { width: 50px; height: 50px; }
+    .player-name { font-size: 1rem; }
+    .player-meta { font-size: 0.62rem; gap: 5px; }
+    .player-status { font-size: 0.68rem; }
+    .player-lines { font-size: 0.65rem; padding: 3px 8px; }
+    .player-pet-name { font-size: 0.62rem; }
+
+    /* 規則卡 */
+    .rules-card { padding: 18px 18px; }
+    .rules-card h3 { font-size: 1rem; }
+    .rules-card ol { font-size: 0.85rem; padding-left: 20px; }
+
+    /* 玩家頁 Header 變直式 */
+    .back-btn { padding: 7px 14px; font-size: 0.75rem; }
+    .player-header {
+      flex-direction: column;
+      text-align: center;
+      min-height: auto;
+      padding-bottom: 18px;
+    }
+    .player-header::before, .player-header::after {
+      width: 100%;
+      height: 120px;
+      clip-path: polygon(0 0, 100% 0, 100% 78%, 0 100%);
+    }
+    .current-avatar {
+      width: 100px; height: 100px;
+      margin: 18px auto 10px;
+      border-width: 4px;
+    }
+    .current-avatar svg, .current-avatar img { width: 84px; height: 84px; }
+    .player-header-info { padding: 0 20px; flex: none; width: 100%; }
+    .player-name-big { font-size: 1.7rem; letter-spacing: -0.5px; }
+    .player-tag-row { justify-content: center; font-size: 0.7rem; gap: 10px; }
+    .pet-label { font-size: 0.8rem; }
+    .change-pet-btn { font-size: 0.7rem; padding: 6px 14px; }
+
+    /* 寵物選擇器 3 欄 */
+    .pet-picker { padding: 16px 14px; }
+    .pet-picker h3 { font-size: 1.05rem; }
+    .pet-picker .sub { font-size: 0.75rem; }
+    .pet-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .pet-option { min-height: 100px; padding: 6px 3px; }
+    .pet-option svg, .pet-option img { width: 70%; height: 52px; }
+    .pet-option .name { font-size: 0.64rem; }
+    .pet-option .meme { font-size: 0.54rem; }
+
+    /* Bingo 面板 */
+    .bingo-panel { padding: 16px 14px; }
+    .bingo-panel h3 { font-size: 1rem; }
+    .grid { gap: 8px; }
+    .cell { padding: 6px; border-radius: 10px; }
+    .cell .text-display, .cell textarea { font-size: 0.85rem; line-height: 1.25; }
+    .cell.checked::after { width: 18px; height: 18px; font-size: 0.8rem; top: 4px; right: 4px; }
+    .status-bar { padding: 10px 12px; font-size: 0.8rem; }
+    .lines-pill { font-size: 0.75rem; }
+    .lines-num { font-size: 0.85rem; padding: 3px 10px; }
+
+    /* 按鈕 */
+    .controls { gap: 8px; }
+    button { min-width: auto; padding: 10px 10px; font-size: 0.75rem; letter-spacing: 0.5px; box-shadow: 3px 3px 0 var(--orange-dark); }
+    .btn-warning { box-shadow: 3px 3px 0 #c89a20; }
+    .btn-primary:hover:not(:disabled), .btn-warning:hover:not(:disabled) {
+      box-shadow: 4px 4px 0 var(--orange-dark);
+    }
+
+    .notice { font-size: 0.78rem; padding: 10px 12px; }
+
+    footer { font-size: 0.7rem; margin-top: 24px; }
+  }
+
+  /* ===== 小手機 (≤ 380px) ===== */
+  @media (max-width: 380px) {
+    .container { padding: 12px 10px 24px; }
+    .nav-links { gap: 8px; font-size: 0.6rem; }
+    h1 { font-size: 1.4rem; }
+    .time-block .num { font-size: 1.2rem; }
+    .pet-grid { grid-template-columns: repeat(3, 1fr); gap: 6px; }
+    .pet-option { min-height: 90px; }
+    .pet-option svg, .pet-option img { height: 44px; }
+    .cell .text-display, .cell textarea { font-size: 0.72rem; line-height: 1.2; }
+    .player-name-big { font-size: 1.4rem; }
+    .controls button { font-size: 0.7rem; padding: 10px 6px; }
+  }
+
+  /* ===== 超小螢幕橫向捲動保護 ===== */
+  html, body { overflow-x: hidden; max-width: 100%; }
+  .hero, .countdown-box, .players-grid, .rules-card, .bingo-panel, .pet-picker, .player-header {
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- ========== 首頁 ========== -->
+  <div class="home-view" id="homeView">
+    <!-- 頂部導航 -->
+    <div class="topnav">
+      <div class="logo">BINGO<span class="logo-big">2026</span></div>
+      <div class="nav-links">
+        <span class="active">HOME</span>
+        <span>RULES</span>
+        <span>PLAYERS</span>
+        <span>WALLPAPER</span>
+      </div>
+    </div>
+
+    <!-- Hero -->
+    <div class="hero">
+      <div class="hero-orange-panel">
+        <div class="hero-avatars" id="heroAvatars"></div>
+      </div>
+      <div class="hero-content">
+        <div class="hero-eyebrow">CH·T MINI · VOL.01</div>
+        <h1>9 GRID <span class="hl">BINGO</span><br>CHALLENGE</h1>
+        <p class="tagline">寫下你 2026/7/19 前想達成的 9 個小目標，排亂鎖定、逐一達成。連最多線的人，拿走全部賭金。</p>
+        <button class="hero-cta" onclick="document.getElementById('playersGrid').scrollIntoView({behavior:'smooth',block:'start'})">LET'S GO →</button>
+      </div>
+    </div>
+
+    <!-- 倒數計時 -->
+    <div class="countdown-box">
+      <div class="countdown-left">
+        <div class="countdown-label">DEADLINE</div>
+        <div class="countdown-target">2026 / 07 / 19</div>
+      </div>
+      <div class="countdown-grid">
+        <div class="time-block"><div class="num" id="cdDays">--</div><div class="lbl">DAYS</div></div>
+        <div class="time-block"><div class="num" id="cdHours">--</div><div class="lbl">HOURS</div></div>
+        <div class="time-block"><div class="num" id="cdMins">--</div><div class="lbl">MINS</div></div>
+        <div class="time-block"><div class="num" id="cdSecs">--</div><div class="lbl">SECS</div></div>
+      </div>
+    </div>
+
+    <!-- 4 位玩家 -->
+    <div class="section-head">
+      <h2 class="section-title">PICK YOUR <span class="hl">PLAYER</span></h2>
+      <span class="section-chip">4 PLAYERS</span>
+    </div>
+    <div class="players-grid" id="playersGrid"></div>
+
+    <!-- 規則 -->
+    <div class="rules-card">
+      <h3>📜 GAME RULES · 遊戲規則</h3>
+      <ol>
+        <li>每人選一隻代表<strong>迷因寵物</strong>（20 選 1，含經典吉娃娃 Tuna & Gidget）</li>
+        <li>寫下 <strong>9 個</strong>在 2026/7/19 前想達成的小目標</li>
+        <li>中間格為「自由格」，位置固定不動</li>
+        <li>按「隨機排亂」打亂 8 格位置 —— <strong>僅限一次！</strong>排完即鎖定</li>
+        <li>達成目標就打勾 ✓，橫／直／斜任意 3 格連成一線 = 1 條 Bingo</li>
+        <li>7/19 結算：<strong>每人 500 台幣</strong>，連線最多者全拿；並列則均分 🏆</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- ========== 玩家頁 ========== -->
+  <div class="player-view" id="playerView">
+    <button class="back-btn" id="backBtn">← 回首頁</button>
+
+    <div class="player-header">
+      <div class="current-avatar" id="currentAvatar">
+        <div class="avatar-placeholder">?</div>
+      </div>
+      <div class="player-header-info">
+        <div class="player-name-big" id="playerNameBig">—</div>
+        <div class="player-tag-row" id="playerTagRow">
+          <span><span class="key">PET</span> <span id="tagPet">—</span></span>
+          <span class="sep">·</span>
+          <span><span class="key">LINES</span> <span id="tagLines">0</span></span>
+        </div>
+        <div class="pet-label" id="petLabel">還沒選寵物</div>
+        <button class="change-pet-btn" id="changePetBtn">🐾 CHOOSE MEME PET</button>
+      </div>
+    </div>
+
+    <!-- 寵物選擇器 -->
+    <div class="pet-picker" id="petPicker" style="display:none;">
+      <h3>PICK YOUR MEME PET</h3>
+      <div class="sub">上傳自己找的迷因圖，或選下方插畫版本（含 2 隻吉娃娃 Tuna & Gidget）</div>
+
+      <!-- 自訂上傳區 -->
+      <div style="background: linear-gradient(135deg, #fff4ea, #fdeadb); border: 2px dashed var(--orange); border-radius: 12px; padding: 16px; margin-bottom: 20px; text-align: center;">
+        <div style="font-weight: 900; color: var(--orange); letter-spacing: 1px; margin-bottom: 6px; font-size: 0.85rem;">📸 UPLOAD YOUR MEME IMAGE</div>
+        <div style="color: var(--text-soft); font-size: 0.8rem; margin-bottom: 12px;">
+          到 <a href="https://www.google.com/search?q=meme+animal&tbm=isch" target="_blank" style="color: var(--orange); font-weight: 700;">Google 圖片</a> 找你喜歡的迷因寵物 → 存到電腦 → 上傳 👇
+        </div>
+        <input type="file" id="customPetUpload" accept="image/*" style="display:none" />
+        <button class="btn-primary" id="uploadBtn" style="max-width: 240px;">⬆️ 選擇圖片上傳</button>
+        <div id="customPreview" style="display:none; margin-top: 12px;">
+          <img id="customPreviewImg" style="max-width: 100px; max-height: 100px; border-radius: 50%; border: 3px solid var(--orange); object-fit: cover;" />
+          <div style="margin-top: 8px;">
+            <button class="btn-warning" id="useCustomBtn" style="max-width: 180px;">✓ 使用這張當頭像</button>
+          </div>
+        </div>
+      </div>
+
+      <div style="text-align: center; font-size: 0.75rem; color: var(--muted); margin-bottom: 12px; letter-spacing: 1px; font-weight: 700;">— 或選擇內建插畫版本 —</div>
+
+      <div class="pet-grid" id="petGrid"></div>
+    </div>
+
+    <!-- Bingo -->
+    <div class="bingo-panel">
+      <h3>
+        <span>📝 我的 9 宮格</span>
+        <span class="stage-badge" id="stageBadge">編輯中</span>
+      </h3>
+
+      <div class="status-bar" id="statusBar" style="display:none;">
+        <div class="lines-pill">🎯 已連線 <span class="lines-num" id="linesCount">0</span></div>
+        <div style="color:var(--text-soft); font-size:0.85rem;">
+          已達成 <span id="checkedCount">0</span> / 9
+        </div>
+      </div>
+
+      <div class="grid" id="grid"></div>
+
+      <div class="controls">
+        <button class="btn-primary" id="saveBtn">💾 儲存</button>
+        <button class="btn-warning" id="shuffleBtn" disabled>🎲 排亂（僅一次）</button>
+        <button class="btn-secondary" id="resetBtn">🔄 重來</button>
+      </div>
+
+      <div class="notice" id="mainNotice">
+        👆 先選寵物、填 9 個目標 → 存檔 → 按「排亂」鎖定位置。
+      </div>
+    </div>
+
+    <!-- 手機桌布 -->
+    <div class="bingo-panel">
+      <h3>
+        <span>📱 存成手機桌布</span>
+      </h3>
+      <div style="color: var(--text-soft); font-size: 0.9rem; margin-bottom: 14px;">
+        把你的 Bingo 存成桌布，每天打開手機都看得到目標！
+      </div>
+
+      <label style="font-size: 0.85rem; font-weight: 600; display: block; margin-bottom: 6px;">選擇手機型號</label>
+      <select id="phoneModel" style="width: 100%; padding: 12px 14px; background: var(--bg-1); border: 2px solid var(--border); border-radius: 12px; font-size: 0.9rem; font-family: inherit; color: var(--text); margin-bottom: 14px; cursor: pointer;">
+      </select>
+
+      <div id="wallpaperPreviewBox" style="display: none; background: var(--bg-1); border-radius: 16px; padding: 16px; margin-bottom: 14px; text-align: center;">
+        <canvas id="wallpaperCanvas" style="max-width: 100%; max-height: 400px; border-radius: 12px; box-shadow: var(--shadow);"></canvas>
+        <div style="font-size: 0.75rem; color: var(--text-soft); margin-top: 8px;" id="wallpaperSize"></div>
+      </div>
+
+      <div class="controls">
+        <button class="btn-primary" id="genWallpaperBtn">🎨 生成預覽</button>
+        <button class="btn-warning" id="downloadWallpaperBtn" disabled>⬇️ 下載 PNG</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>CH·T MINI · 2026 BINGO CHALLENGE · 晴方 / 郁淳 / 金妮 / 原價</footer>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ========== 20 迷因寵物 SVG ==========
+const PETS = [
+  { id: 'doge', name: '柴犬 (Kabosu)', meme: 'DOGE', svg: `<svg viewBox="0 0 100 100"><polygon points="22,32 30,8 42,30" fill="#d9944a"/><polygon points="78,32 70,8 58,30" fill="#d9944a"/><polygon points="26,26 30,14 37,24" fill="#f5b97a"/><polygon points="74,26 70,14 63,24" fill="#f5b97a"/><ellipse cx="50" cy="58" rx="33" ry="30" fill="#e8b67a"/><path d="M28 60 Q50 88 72 60 Q58 78 50 78 Q42 78 28 60" fill="#fff4e0"/><ellipse cx="40" cy="52" rx="5" ry="5" fill="#fff"/><ellipse cx="60" cy="52" rx="5" ry="5" fill="#fff"/><circle cx="42" cy="52" r="2.8" fill="#2d2020"/><circle cx="62" cy="52" r="2.8" fill="#2d2020"/><path d="M34 42 Q40 40 46 44" stroke="#2d2020" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M66 42 Q60 40 54 44" stroke="#2d2020" stroke-width="1.6" fill="none" stroke-linecap="round"/><ellipse cx="50" cy="62" rx="2.8" ry="2" fill="#2d2020"/><path d="M47 67 Q50 69 53 67" stroke="#2d2020" stroke-width="1.3" fill="none" stroke-linecap="round"/></svg>` },
+  { id: 'cheems', name: 'Cheems', meme: 'CHEEMS', svg: `<svg viewBox="0 0 100 100"><polygon points="22,32 30,8 42,30" fill="#c88240"/><polygon points="78,32 70,8 58,30" fill="#c88240"/><ellipse cx="50" cy="58" rx="32" ry="30" fill="#e0a368"/><path d="M28 60 Q50 88 72 60 Q58 78 50 78 Q42 78 28 60" fill="#fff4e0"/><path d="M34 52 Q40 48 46 52" stroke="#2d2020" stroke-width="2.2" fill="none" stroke-linecap="round"/><path d="M54 52 Q60 48 66 52" stroke="#2d2020" stroke-width="2.2" fill="none" stroke-linecap="round"/><ellipse cx="50" cy="62" rx="2.5" ry="1.8" fill="#2d2020"/><ellipse cx="50" cy="72" rx="6" ry="5" fill="#ff8899"/><path d="M48 73 L 48 76" stroke="#e04878" stroke-width="1" fill="none"/><circle cx="28" cy="66" r="5.5" fill="#ff9ab0" opacity="0.7"/><circle cx="72" cy="66" r="5.5" fill="#ff9ab0" opacity="0.7"/></svg>` },
+  { id: 'grumpy', name: 'Grumpy Cat', meme: 'GRUMPY', svg: `<svg viewBox="0 0 100 100"><polygon points="22,30 28,6 42,28" fill="#c8a878"/><polygon points="78,30 72,6 58,28" fill="#c8a878"/><polygon points="26,24 30,14 36,23" fill="#ffc0ce"/><polygon points="74,24 70,14 64,23" fill="#ffc0ce"/><ellipse cx="50" cy="58" rx="33" ry="30" fill="#f0dcb4"/><ellipse cx="50" cy="60" rx="16" ry="20" fill="#f5e8d0"/><ellipse cx="40" cy="52" rx="5" ry="4" fill="#5ba87a"/><ellipse cx="60" cy="52" rx="5" ry="4" fill="#5ba87a"/><ellipse cx="40" cy="52" rx="1.5" ry="3" fill="#2d2020"/><ellipse cx="60" cy="52" rx="1.5" ry="3" fill="#2d2020"/><path d="M32 44 L 44 48" stroke="#2d2020" stroke-width="2.5" stroke-linecap="round"/><path d="M68 44 L 56 48" stroke="#2d2020" stroke-width="2.5" stroke-linecap="round"/><ellipse cx="50" cy="64" rx="2.2" ry="1.6" fill="#2d2020"/><path d="M40 74 Q50 66 60 74" stroke="#2d2020" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>` },
+  { id: 'pusheen', name: 'Pusheen', meme: 'PUSHEEN', svg: `<svg viewBox="0 0 100 100"><polygon points="28,30 34,14 42,30" fill="#9aa0a8"/><polygon points="72,30 66,14 58,30" fill="#9aa0a8"/><ellipse cx="50" cy="60" rx="38" ry="32" fill="#b5bac2"/><path d="M28 42 L 34 40 M30 50 L 36 48 M72 42 L 66 40 M70 50 L 64 48" stroke="#8a9098" stroke-width="1.8" stroke-linecap="round"/><path d="M22 66 L 30 64 M78 66 L 70 64" stroke="#8a9098" stroke-width="1.5" stroke-linecap="round"/><circle cx="40" cy="56" r="2.2" fill="#2d2020"/><circle cx="60" cy="56" r="2.2" fill="#2d2020"/><path d="M45 64 Q47 67 50 65 Q53 67 55 64" stroke="#2d2020" stroke-width="1.4" fill="none" stroke-linecap="round"/><circle cx="32" cy="62" r="3" fill="#ffb3c1" opacity="0.6"/><circle cx="68" cy="62" r="3" fill="#ffb3c1" opacity="0.6"/></svg>` },
+  { id: 'nyan', name: 'Nyan Cat', meme: 'NYAN', svg: `<svg viewBox="0 0 100 100"><rect x="0" y="52" width="18" height="4" fill="#ff3c3c"/><rect x="0" y="56" width="18" height="4" fill="#ff9933"/><rect x="0" y="60" width="18" height="4" fill="#ffeb3c"/><rect x="0" y="64" width="18" height="4" fill="#3cdd44"/><rect x="0" y="68" width="18" height="4" fill="#3c99ff"/><rect x="0" y="72" width="18" height="4" fill="#a03cff"/><rect x="18" y="38" width="58" height="42" rx="4" fill="#f9c6cf"/><rect x="22" y="42" width="50" height="34" rx="3" fill="#f7a6b4"/><circle cx="30" cy="50" r="1.5" fill="#fff"/><circle cx="45" cy="58" r="1.5" fill="#3cdd44"/><circle cx="58" cy="48" r="1.5" fill="#ffeb3c"/><circle cx="64" cy="62" r="1.5" fill="#3c99ff"/><rect x="60" y="26" width="30" height="28" rx="2" fill="#b5b5bc"/><polygon points="63,28 66,20 71,28" fill="#b5b5bc"/><polygon points="80,28 83,20 88,28" fill="#b5b5bc"/><rect x="66" y="38" width="4" height="6" fill="#2d2020"/><rect x="80" y="38" width="4" height="6" fill="#2d2020"/><rect x="73" y="46" width="4" height="3" fill="#ff8899"/></svg>` },
+  { id: 'smudge', name: 'Smudge', meme: 'DINNER CAT', svg: `<svg viewBox="0 0 100 100"><polygon points="22,30 28,6 42,28" fill="#f5f0ea"/><polygon points="78,30 72,6 58,28" fill="#f5f0ea"/><polygon points="26,24 30,14 36,23" fill="#ffc0ce"/><polygon points="74,24 70,14 64,23" fill="#ffc0ce"/><ellipse cx="50" cy="58" rx="33" ry="30" fill="#fafafa" stroke="#e0d8d0" stroke-width="0.5"/><ellipse cx="40" cy="54" rx="5.5" ry="7" fill="#d4a548"/><ellipse cx="60" cy="54" rx="5.5" ry="7" fill="#d4a548"/><ellipse cx="40" cy="54" rx="2" ry="6" fill="#2d2020"/><ellipse cx="60" cy="54" rx="2" ry="6" fill="#2d2020"/><circle cx="41" cy="51" r="1.2" fill="#fff"/><circle cx="61" cy="51" r="1.2" fill="#fff"/><path d="M50 64 L 47 67 L 50 69 L 53 67 Z" fill="#ff9aa8"/><path d="M42 76 Q50 70 58 76" stroke="#2d2020" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M22 62 L 32 60 M68 60 L 78 62" stroke="#a8a0a0" stroke-width="1"/></svg>` },
+  { id: 'floppa', name: 'Big Floppa', meme: 'FLOPPA', svg: `<svg viewBox="0 0 100 100"><polygon points="14,34 18,0 44,26" fill="#c89668"/><polygon points="86,34 82,0 56,26" fill="#c89668"/><polygon points="15,4 18,0 24,8" fill="#2d2020"/><polygon points="85,4 82,0 76,8" fill="#2d2020"/><polygon points="20,24 24,10 34,22" fill="#f0c8a0"/><polygon points="80,24 76,10 66,22" fill="#f0c8a0"/><ellipse cx="50" cy="60" rx="30" ry="28" fill="#d9a878"/><path d="M32 62 Q50 85 68 62 Q58 78 50 78 Q42 78 32 62" fill="#f5e0c8"/><ellipse cx="40" cy="56" rx="4" ry="5" fill="#f0c040"/><ellipse cx="60" cy="56" rx="4" ry="5" fill="#f0c040"/><ellipse cx="40" cy="56" rx="1.5" ry="4" fill="#2d2020"/><ellipse cx="60" cy="56" rx="1.5" ry="4" fill="#2d2020"/><circle cx="40.8" cy="54.5" r="1" fill="#fff"/><circle cx="60.8" cy="54.5" r="1" fill="#fff"/><path d="M50 64 L 47 67 L 50 69 L 53 67 Z" fill="#2d2020"/><path d="M50 69 Q46 73 44 71 M50 69 Q54 73 56 71" stroke="#2d2020" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>` },
+  { id: 'boo', name: 'Boo', meme: 'BOO POM', svg: `<svg viewBox="0 0 100 100"><circle cx="20" cy="48" r="16" fill="#e89c5a"/><circle cx="80" cy="48" r="16" fill="#e89c5a"/><circle cx="25" cy="72" r="14" fill="#e89c5a"/><circle cx="75" cy="72" r="14" fill="#e89c5a"/><circle cx="28" cy="28" r="9" fill="#c87a3a"/><circle cx="72" cy="28" r="9" fill="#c87a3a"/><ellipse cx="50" cy="58" rx="30" ry="28" fill="#f5b878"/><ellipse cx="50" cy="64" rx="18" ry="14" fill="#fff5dd"/><circle cx="40" cy="54" r="3.5" fill="#2d2020"/><circle cx="60" cy="54" r="3.5" fill="#2d2020"/><circle cx="40.6" cy="53" r="1" fill="#fff"/><circle cx="60.6" cy="53" r="1" fill="#fff"/><ellipse cx="50" cy="62" rx="2.5" ry="1.8" fill="#2d2020"/><path d="M50 64 Q46 68 44 66 M50 64 Q54 68 56 66" stroke="#2d2020" stroke-width="1.3" fill="none" stroke-linecap="round"/></svg>` },
+  { id: 'tuna', name: '吉娃娃 Tuna', meme: 'UNDERBITE', svg: `<svg viewBox="0 0 100 100"><polygon points="16,34 24,2 44,28" fill="#a06a3a"/><polygon points="84,34 76,2 56,28" fill="#a06a3a"/><polygon points="20,26 26,10 36,24" fill="#c89064"/><polygon points="80,26 74,10 64,24" fill="#c89064"/><ellipse cx="50" cy="54" rx="28" ry="26" fill="#b8794c"/><ellipse cx="50" cy="64" rx="14" ry="11" fill="#d99a6a"/><circle cx="40" cy="50" r="6.5" fill="#fff"/><circle cx="60" cy="50" r="6.5" fill="#fff"/><circle cx="40" cy="50" r="5" fill="#3d2015"/><circle cx="60" cy="50" r="5" fill="#3d2015"/><circle cx="41.5" cy="48" r="2" fill="#fff"/><circle cx="61.5" cy="48" r="2" fill="#fff"/><ellipse cx="50" cy="60" rx="2" ry="1.5" fill="#2d2020"/><path d="M43 64 Q50 68 57 64" stroke="#2d2020" stroke-width="1.3" fill="none" stroke-linecap="round"/><rect x="44" y="66" width="12" height="6" rx="1.5" fill="#fff5dd" stroke="#2d2020" stroke-width="0.6"/><line x1="47" y1="66" x2="47" y2="71" stroke="#c8b088" stroke-width="0.6"/><line x1="50" y1="66" x2="50" y2="71" stroke="#c8b088" stroke-width="0.6"/><line x1="53" y1="66" x2="53" y2="71" stroke="#c8b088" stroke-width="0.6"/><ellipse cx="50" cy="74" rx="3.5" ry="2" fill="#ff9aa8"/></svg>` },
+  { id: 'chalupa', name: '吉娃娃 Gidget', meme: 'TACO BELL', svg: `<svg viewBox="0 0 100 100"><polygon points="18,34 26,4 44,30" fill="#9a6838"/><polygon points="82,34 74,4 56,30" fill="#9a6838"/><polygon points="22,28 28,12 36,26" fill="#c08a5c"/><polygon points="78,28 72,12 64,26" fill="#c08a5c"/><ellipse cx="50" cy="58" rx="28" ry="28" fill="#b0784a"/><ellipse cx="50" cy="66" rx="14" ry="10" fill="#d09a6a"/><circle cx="40" cy="52" r="6" fill="#fff"/><circle cx="60" cy="52" r="6" fill="#fff"/><circle cx="40" cy="52" r="4.5" fill="#3d2015"/><circle cx="60" cy="52" r="4.5" fill="#3d2015"/><circle cx="41.2" cy="50" r="1.8" fill="#fff"/><circle cx="61.2" cy="50" r="1.8" fill="#fff"/><path d="M34 40 Q40 38 45 42" stroke="#2d2020" stroke-width="1.3" fill="none" stroke-linecap="round"/><path d="M66 40 Q60 38 55 42" stroke="#2d2020" stroke-width="1.3" fill="none" stroke-linecap="round"/><ellipse cx="50" cy="62" rx="2.2" ry="1.6" fill="#2d2020"/><ellipse cx="50" cy="72" rx="7" ry="6" fill="#2d2020"/><ellipse cx="50" cy="74" rx="5" ry="4" fill="#ff8899"/></svg>` },
+  { id: 'keyboard', name: 'Keyboard Cat', meme: 'KEYBOARD', svg: `<svg viewBox="0 0 100 100"><rect x="6" y="72" width="88" height="20" rx="2" fill="#2d2828"/><rect x="10" y="76" width="7" height="5" fill="#c8c8c8"/><rect x="19" y="76" width="7" height="5" fill="#c8c8c8"/><rect x="28" y="76" width="7" height="5" fill="#c8c8c8"/><rect x="37" y="76" width="7" height="5" fill="#c8c8c8"/><rect x="46" y="76" width="7" height="5" fill="#c8c8c8"/><rect x="55" y="76" width="7" height="5" fill="#c8c8c8"/><rect x="64" y="76" width="7" height="5" fill="#c8c8c8"/><rect x="73" y="76" width="7" height="5" fill="#c8c8c8"/><rect x="82" y="76" width="7" height="5" fill="#c8c8c8"/><rect x="10" y="83" width="78" height="5" fill="#c8c8c8"/><polygon points="22,24 28,2 42,22" fill="#e89020"/><polygon points="78,24 72,2 58,22" fill="#e89020"/><ellipse cx="50" cy="48" rx="32" ry="26" fill="#f0a848"/><path d="M30 38 L 36 40 M64 40 L 70 38 M28 50 L 34 52 M66 52 L 72 50" stroke="#c87420" stroke-width="1.5" stroke-linecap="round"/><circle cx="40" cy="48" r="3.5" fill="#2d2020"/><circle cx="60" cy="48" r="3.5" fill="#2d2020"/><circle cx="41" cy="47" r="1" fill="#fff"/><circle cx="61" cy="47" r="1" fill="#fff"/><path d="M50 58 L 47 61 L 50 63 L 53 61 Z" fill="#ff9aa8"/><path d="M50 63 Q46 67 44 65 M50 63 Q54 67 56 65" stroke="#2d2020" stroke-width="1.3" fill="none"/></svg>` },
+  { id: 'lilbub', name: 'Lil Bub', meme: 'TONGUE OUT', svg: `<svg viewBox="0 0 100 100"><polygon points="22,30 28,6 42,28" fill="#8a8580"/><polygon points="78,30 72,6 58,28" fill="#8a8580"/><polygon points="26,24 30,14 36,23" fill="#ffc0ce"/><polygon points="74,24 70,14 64,23" fill="#ffc0ce"/><ellipse cx="50" cy="58" rx="32" ry="30" fill="#a8a098"/><ellipse cx="40" cy="72" rx="12" ry="6" fill="#fafafa"/><circle cx="40" cy="52" r="8" fill="#7ac080"/><circle cx="60" cy="52" r="8" fill="#7ac080"/><circle cx="40" cy="52" r="3.5" fill="#2d2020"/><circle cx="60" cy="52" r="3.5" fill="#2d2020"/><circle cx="41.5" cy="50" r="2" fill="#fff"/><circle cx="61.5" cy="50" r="2" fill="#fff"/><path d="M50 62 L 47 65 L 50 67 L 53 65 Z" fill="#ff9aa8"/><ellipse cx="50" cy="74" rx="3.5" ry="5" fill="#ff8899"/><path d="M50 72 L 50 77" stroke="#e04878" stroke-width="0.8"/></svg>` },
+  { id: 'maru', name: 'Maru in Box', meme: 'BOX CAT', svg: `<svg viewBox="0 0 100 100"><rect x="6" y="54" width="88" height="42" fill="#c8a878" stroke="#8a6a4a" stroke-width="1.5"/><path d="M6 54 L 16 48 L 84 48 L 94 54" fill="#d9b888" stroke="#8a6a4a" stroke-width="1.5"/><line x1="6" y1="54" x2="94" y2="54" stroke="#8a6a4a" stroke-width="1.5"/><line x1="20" y1="54" x2="20" y2="96" stroke="#a68858" stroke-width="0.5" opacity="0.5"/><path d="M20 32 Q20 18 34 22 Q36 30 28 34 Z" fill="#d9c8a8"/><path d="M80 32 Q80 18 66 22 Q64 30 72 34 Z" fill="#d9c8a8"/><ellipse cx="50" cy="44" rx="28" ry="24" fill="#e8d6b4"/><ellipse cx="40" cy="42" rx="3.8" ry="5" fill="#2d2020"/><ellipse cx="60" cy="42" rx="3.8" ry="5" fill="#2d2020"/><circle cx="41" cy="40" r="1.2" fill="#fff"/><circle cx="61" cy="40" r="1.2" fill="#fff"/><path d="M50 48 L 47 51 L 50 53 L 53 51 Z" fill="#ff9aa8"/><path d="M50 53 Q46 57 44 55 M50 53 Q54 57 56 55" stroke="#2d2020" stroke-width="1.3" fill="none"/></svg>` },
+  { id: 'jiffpom', name: 'Jiffpom', meme: 'FLUFF', svg: `<svg viewBox="0 0 100 100"><circle cx="22" cy="42" r="13" fill="#f5e0c0"/><circle cx="78" cy="42" r="13" fill="#f5e0c0"/><circle cx="28" cy="72" r="14" fill="#f5e0c0"/><circle cx="72" cy="72" r="14" fill="#f5e0c0"/><circle cx="50" cy="80" r="11" fill="#f5e0c0"/><circle cx="32" cy="26" r="7" fill="#e8c890"/><circle cx="68" cy="26" r="7" fill="#e8c890"/><ellipse cx="50" cy="56" rx="28" ry="26" fill="#f8e8cc"/><circle cx="40" cy="54" r="3.2" fill="#2d2020"/><circle cx="60" cy="54" r="3.2" fill="#2d2020"/><circle cx="40.8" cy="53" r="1" fill="#fff"/><circle cx="60.8" cy="53" r="1" fill="#fff"/><ellipse cx="50" cy="62" rx="2.5" ry="2" fill="#2d2020"/><path d="M45 67 Q50 72 55 67" stroke="#2d2020" stroke-width="1.5" fill="none" stroke-linecap="round"/><path d="M47 68 Q50 72 53 68 L 53 71 Q50 73 47 71 Z" fill="#ff99a8"/></svg>` },
+  { id: 'shironeko', name: 'Shironeko', meme: 'ZEN CAT', svg: `<svg viewBox="0 0 100 100"><polygon points="22,30 28,6 42,28" fill="#f5f0e8"/><polygon points="78,30 72,6 58,28" fill="#f5f0e8"/><polygon points="26,24 30,14 36,23" fill="#ffc0ce"/><polygon points="74,24 70,14 64,23" fill="#ffc0ce"/><ellipse cx="50" cy="58" rx="33" ry="30" fill="#fdfaf5"/><path d="M32 54 Q40 60 46 54" stroke="#2d2020" stroke-width="2.2" fill="none" stroke-linecap="round"/><path d="M54 54 Q60 60 68 54" stroke="#2d2020" stroke-width="2.2" fill="none" stroke-linecap="round"/><path d="M50 64 L 47 67 L 50 69 L 53 67 Z" fill="#ffa0b0"/><path d="M44 73 Q50 77 56 73" stroke="#2d2020" stroke-width="1.5" fill="none" stroke-linecap="round"/><text x="72" y="32" font-family="Arial Black, sans-serif" font-weight="900" font-size="12" fill="#7ad4b8">Z</text><text x="82" y="22" font-family="Arial Black, sans-serif" font-weight="900" font-size="8" fill="#a0e0c8">z</text><circle cx="28" cy="64" r="3.5" fill="#ffb3c1" opacity="0.6"/><circle cx="72" cy="64" r="3.5" fill="#ffb3c1" opacity="0.6"/></svg>` },
+  { id: 'sam', name: 'Sam', meme: 'EYEBROWS', svg: `<svg viewBox="0 0 100 100"><polygon points="18,32 26,6 42,32" fill="#4a3020"/><polygon points="82,32 74,6 58,32" fill="#4a3020"/><polygon points="24,28 28,14 36,26" fill="#7a5a3a"/><polygon points="76,28 72,14 64,26" fill="#7a5a3a"/><ellipse cx="50" cy="58" rx="32" ry="30" fill="#5a3820"/><ellipse cx="50" cy="68" rx="20" ry="14" fill="#8a5a3a"/><ellipse cx="38" cy="44" rx="7" ry="3.5" fill="#fff8ec"/><ellipse cx="62" cy="44" rx="7" ry="3.5" fill="#fff8ec"/><circle cx="40" cy="54" r="3.8" fill="#2d2020"/><circle cx="60" cy="54" r="3.8" fill="#2d2020"/><circle cx="41" cy="53" r="1.2" fill="#fff"/><circle cx="61" cy="53" r="1.2" fill="#fff"/><ellipse cx="50" cy="66" rx="3" ry="2.3" fill="#2d2020"/><path d="M50 70 Q45 74 42 72 M50 70 Q55 74 58 72" stroke="#2d2020" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>` },
+  { id: 'marnie', name: 'Marnie', meme: 'TONGUE TILT', svg: `<svg viewBox="0 0 100 100"><g transform="rotate(-15 50 55)"><ellipse cx="22" cy="40" rx="11" ry="17" fill="#b89878" transform="rotate(-20 22 40)"/><ellipse cx="78" cy="40" rx="11" ry="17" fill="#b89878" transform="rotate(20 78 40)"/><ellipse cx="50" cy="56" rx="30" ry="28" fill="#d9c0a0"/><circle cx="50" cy="30" r="8" fill="#e8d4b8"/><ellipse cx="50" cy="64" rx="18" ry="13" fill="#f0e0c8"/><circle cx="42" cy="52" r="3.5" fill="#2d2020"/><circle cx="58" cy="52" r="3.5" fill="#2d2020"/><circle cx="42.8" cy="51" r="1.1" fill="#fff"/><circle cx="58.8" cy="51" r="1.1" fill="#fff"/><ellipse cx="50" cy="62" rx="2.5" ry="2" fill="#2d2020"/><ellipse cx="56" cy="72" rx="5" ry="3" fill="#ff8899" transform="rotate(20 56 72)"/></g></svg>` },
+  { id: 'bananacat', name: 'Banana Cat', meme: 'HAPPY HAPPY', svg: `<svg viewBox="0 0 100 100"><path d="M8 72 Q 28 28 58 16 Q 82 12 92 24 Q 82 34 58 46 Q 32 60 12 78 Z" fill="#ffd84a"/><path d="M8 72 Q 28 28 58 16" stroke="#e8b830" stroke-width="1.8" fill="none"/><path d="M90 22 L 94 16 L 86 12" stroke="#4a3020" stroke-width="2.2" fill="#4a3020"/><ellipse cx="50" cy="48" rx="24" ry="20" fill="#f0e0a0"/><polygon points="32,38 36,26 44,40" fill="#f0e0a0"/><polygon points="68,38 64,26 56,40" fill="#f0e0a0"/><path d="M38 46 Q42 40 46 46" stroke="#2d2020" stroke-width="2.4" fill="none" stroke-linecap="round"/><path d="M54 46 Q58 40 62 46" stroke="#2d2020" stroke-width="2.4" fill="none" stroke-linecap="round"/><path d="M44 54 Q50 60 56 54" stroke="#2d2020" stroke-width="1.7" fill="none" stroke-linecap="round"/><circle cx="34" cy="50" r="2.5" fill="#ffb3c1" opacity="0.7"/><circle cx="66" cy="50" r="2.5" fill="#ffb3c1" opacity="0.7"/></svg>` },
+  { id: 'gabe', name: 'Gabe', meme: 'BORK!', svg: `<svg viewBox="0 0 100 100"><circle cx="26" cy="46" r="13" fill="#e8b878"/><circle cx="74" cy="46" r="13" fill="#e8b878"/><circle cx="30" cy="74" r="13" fill="#e8b878"/><circle cx="70" cy="74" r="13" fill="#e8b878"/><polygon points="32,28 38,14 46,30" fill="#c89660"/><polygon points="68,28 62,14 54,30" fill="#c89660"/><ellipse cx="50" cy="58" rx="30" ry="28" fill="#f0c890"/><circle cx="40" cy="52" r="3" fill="#2d2020"/><circle cx="60" cy="52" r="3" fill="#2d2020"/><circle cx="40.8" cy="51" r="0.8" fill="#fff"/><circle cx="60.8" cy="51" r="0.8" fill="#fff"/><ellipse cx="50" cy="62" rx="2.5" ry="2" fill="#2d2020"/><ellipse cx="50" cy="73" rx="7" ry="6" fill="#2d2020"/><ellipse cx="50" cy="75" rx="5" ry="3.5" fill="#ff7788"/></svg>` },
+  { id: 'polite', name: 'Polite Cat', meme: 'POLITE', svg: `<svg viewBox="0 0 100 100"><polygon points="22,30 28,6 42,28" fill="#2d2020"/><polygon points="78,30 72,6 58,28" fill="#2d2020"/><polygon points="26,24 30,14 36,23" fill="#ffc0ce"/><polygon points="74,24 70,14 64,23" fill="#ffc0ce"/><ellipse cx="50" cy="58" rx="33" ry="30" fill="#2d2020"/><path d="M28 56 Q50 88 72 56 Q50 80 50 80 Q50 80 28 56" fill="#fafafa"/><ellipse cx="40" cy="54" rx="4" ry="5" fill="#f0c040"/><ellipse cx="60" cy="54" rx="4" ry="5" fill="#f0c040"/><circle cx="40" cy="54" r="2" fill="#2d2020"/><circle cx="60" cy="54" r="2" fill="#2d2020"/><circle cx="40.5" cy="53" r="0.9" fill="#fff"/><circle cx="60.5" cy="53" r="0.9" fill="#fff"/><path d="M30 44 Q38 40 46 44" stroke="#2d2020" stroke-width="1.5" fill="none" stroke-linecap="round"/><path d="M70 44 Q62 40 54 44" stroke="#2d2020" stroke-width="1.5" fill="none" stroke-linecap="round"/><ellipse cx="50" cy="64" rx="2" ry="1.5" fill="#2d2020"/><path d="M46 70 Q50 68 54 70" stroke="#2d2020" stroke-width="1.3" fill="none" stroke-linecap="round"/></svg>` },
+  { id: 'loki', name: 'Loki', meme: 'WOLFDOG', svg: `<svg viewBox="0 0 100 100"><polygon points="20,34 28,4 44,30" fill="#4a4038"/><polygon points="80,34 72,4 56,30" fill="#4a4038"/><polygon points="24,28 28,12 36,26" fill="#d9cabc"/><polygon points="76,28 72,12 64,26" fill="#d9cabc"/><ellipse cx="50" cy="58" rx="32" ry="30" fill="#6a5a50"/><path d="M32 56 Q40 48 50 52 Q60 48 68 56 Q58 80 50 82 Q42 80 32 56" fill="#e8dcd0"/><ellipse cx="40" cy="52" rx="4" ry="5" fill="#e8a020"/><ellipse cx="60" cy="52" rx="4" ry="5" fill="#e8a020"/><ellipse cx="40" cy="52" rx="1.5" ry="4" fill="#2d2020"/><ellipse cx="60" cy="52" rx="1.5" ry="4" fill="#2d2020"/><ellipse cx="50" cy="62" rx="3" ry="2.5" fill="#2d2020"/><path d="M50 65 Q44 72 40 69 M50 65 Q56 72 60 69" stroke="#2d2020" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>` }
+];
+
+// ========== 4 位玩家設定 ==========
+const PLAYERS = [
+  { key: '晴方', color: 'coral' },
+  { key: '郁淳', color: 'peach' },
+  { key: '金妮',  color: 'mint' },
+  { key: '原價', color: 'sky' }
+];
+
+const DEADLINE = new Date('2026-07-19T23:59:59+08:00');
+const STORAGE_KEY = 'bingo_4p_v1';
+
+// 全域狀態：四人資料
+let allData = {};
+
+function defaultPlayerData() {
+  return {
+    pet: null,
+    customImage: null, // 自訂上傳的圖片（data URL）
+    goals: ['', '', '', '', '自由格', '', '', '', ''],
+    order: [0,1,2,3,4,5,6,7,8],
+    checked: [false,false,false,false,false,false,false,false,false],
+    shuffled: false,
+    locked: false
+  };
+}
+
+function loadAll() {
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if (raw) {
+    try { allData = JSON.parse(raw); } catch(e) { allData = {}; }
+  }
+  PLAYERS.forEach(p => {
+    if (!allData[p.key]) allData[p.key] = defaultPlayerData();
+  });
+}
+
+function saveAll() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(allData));
+}
+
+// ========== 連線偵測 ==========
+const LINES = [
+  [0,1,2],[3,4,5],[6,7,8],
+  [0,3,6],[1,4,7],[2,5,8],
+  [0,4,8],[2,4,6]
+];
+
+function countLines(data) {
+  return LINES.filter(l => l.every(i => data.checked[i])).length;
+}
+
+// ========== 倒數 ==========
+function updateCountdown() {
+  const now = new Date();
+  const diff = DEADLINE - now;
+  if (diff <= 0) {
+    ['cdDays','cdHours','cdMins','cdSecs'].forEach(id => document.getElementById(id).textContent = '0');
+    return;
+  }
+  const d = Math.floor(diff / 86400000);
+  const h = Math.floor((diff / 3600000) % 24);
+  const m = Math.floor((diff / 60000) % 60);
+  const s = Math.floor((diff / 1000) % 60);
+  document.getElementById('cdDays').textContent = d;
+  document.getElementById('cdHours').textContent = String(h).padStart(2,'0');
+  document.getElementById('cdMins').textContent = String(m).padStart(2,'0');
+  document.getElementById('cdSecs').textContent = String(s).padStart(2,'0');
+}
+
+// ========== Toast ==========
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 1800);
+}
+
+// 取得玩家頭像 HTML（優先自訂圖片，其次插畫，最後問號）
+function getAvatarHtml(data, size) {
+  if (data.customImage) {
+    return `<img src="${data.customImage}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;" />`;
+  }
+  if (data.pet) {
+    const pet = PETS.find(pt => pt.id === data.pet);
+    if (pet) return pet.svg;
+  }
+  return '<div class="avatar-placeholder">?</div>';
+}
+
+// ========== 首頁渲染 ==========
+function renderHome() {
+  // Hero 頭像區
+  const heroAv = document.getElementById('heroAvatars');
+  if (heroAv) {
+    heroAv.innerHTML = '';
+    PLAYERS.forEach(p => {
+      const data = allData[p.key];
+      const wrap = document.createElement('div');
+      wrap.style.cssText = 'display:flex; flex-direction:column; align-items:center; gap:4px;';
+      const av = document.createElement('div');
+      av.innerHTML = data.customImage
+        ? `<img src="${data.customImage}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;" />`
+        : (data.pet ? (PETS.find(pt => pt.id === data.pet)?.svg || '') : '<div style="font-size:2rem;font-weight:900;color:#b8b0a8;">?</div>');
+      av.style.cssText = 'width:80px; height:80px; background:white; border-radius:50%; padding:' + (data.customImage ? '0' : '6px') + '; border:3px solid white; box-shadow:0 3px 8px rgba(0,0,0,0.1); display:flex; align-items:center; justify-content:center; overflow:hidden;';
+      const nm = document.createElement('div');
+      nm.style.cssText = 'color:white; font-weight:900; font-size:0.75rem; letter-spacing:1px; text-shadow:1px 1px 2px rgba(0,0,0,0.2);';
+      nm.textContent = p.key;
+      wrap.appendChild(av);
+      wrap.appendChild(nm);
+      heroAv.appendChild(wrap);
+    });
+  }
+
+  const grid = document.getElementById('playersGrid');
+  grid.innerHTML = '';
+  PLAYERS.forEach((p, i) => {
+    const data = allData[p.key];
+    const pet = data.pet ? PETS.find(pt => pt.id === data.pet) : null;
+    const lines = data.locked ? countLines(data) : 0;
+
+    const card = document.createElement('div');
+    card.className = 'player-card';
+    card.dataset.color = p.color;
+    card.addEventListener('click', () => enterPlayer(p.key));
+
+    const avatarInner = getAvatarHtml(data);
+    const hasAvatar = data.customImage || data.pet;
+
+    const statusText = !hasAvatar ? 'TAP TO START →'
+      : !data.locked ? 'EDITING GOALS...'
+      : 'LOCKED · TRACKING';
+
+    const playerNum = String(i + 1).padStart(2, '0');
+    const petLabel = data.customImage ? 'CUSTOM MEME' : (pet ? (pet.meme || pet.name) : '');
+
+    card.innerHTML = `
+      <div class="avatar-display" style="${data.customImage ? 'padding:0; overflow:hidden;' : ''}">${avatarInner}</div>
+      <div class="player-name">${p.key}</div>
+      <div class="player-meta">
+        <span>NO·${playerNum}</span>
+        <span class="sep">—</span>
+        <span>PLAYER</span>
+      </div>
+      <div class="player-status">${statusText}</div>
+      ${data.locked ? `<div class="player-lines">${lines} LINES</div>` : ''}
+      ${petLabel ? `<div class="player-pet-name">${petLabel}</div>` : ''}
+    `;
+    grid.appendChild(card);
+  });
+}
+
+// ========== 玩家頁 ==========
+let currentPlayer = null;
+
+function enterPlayer(key) {
+  currentPlayer = key;
+  document.getElementById('homeView').classList.add('hidden');
+  document.getElementById('playerView').classList.add('active');
+  renderPlayer();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function exitPlayer() {
+  currentPlayer = null;
+  document.getElementById('homeView').classList.remove('hidden');
+  document.getElementById('playerView').classList.remove('active');
+  document.getElementById('petPicker').style.display = 'none';
+  renderHome();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function renderPlayer() {
+  const data = allData[currentPlayer];
+  const pet = data.pet ? PETS.find(pt => pt.id === data.pet) : null;
+
+  document.getElementById('playerNameBig').textContent = currentPlayer;
+
+  let petLabelText;
+  if (data.customImage) petLabelText = '代表頭像：你自訂的迷因圖 🎨';
+  else if (pet) petLabelText = `代表迷因寵物：${pet.name}`;
+  else petLabelText = '還沒選寵物，點下方按鈕開始';
+  document.getElementById('petLabel').textContent = petLabelText;
+
+  const avatarEl = document.getElementById('currentAvatar');
+  if (data.customImage) {
+    avatarEl.innerHTML = `<img src="${data.customImage}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;" />`;
+    avatarEl.style.padding = '0';
+    avatarEl.style.overflow = 'hidden';
+  } else {
+    avatarEl.innerHTML = pet ? pet.svg : '<div class="avatar-placeholder">?</div>';
+    avatarEl.style.padding = '';
+    avatarEl.style.overflow = '';
+  }
+
+  const tagPet = document.getElementById('tagPet');
+  const tagLines = document.getElementById('tagLines');
+  if (tagPet) tagPet.textContent = data.customImage ? 'CUSTOM' : (pet ? (pet.meme || pet.name) : '—');
+  if (tagLines) tagLines.textContent = data.locked ? countLines(data) : 0;
+
+  renderGrid();
+  renderPetPicker();
+
+  // 重置上傳預覽
+  const prev = document.getElementById('customPreview');
+  if (prev) prev.style.display = 'none';
+  const fi = document.getElementById('customPetUpload');
+  if (fi) fi.value = '';
+}
+
+function renderPetPicker() {
+  const grid = document.getElementById('petGrid');
+  grid.innerHTML = '';
+  const data = allData[currentPlayer];
+  PETS.forEach(pet => {
+    const div = document.createElement('div');
+    // 只有在沒有自訂圖片、且 pet id 符合時才算選中
+    const isSelected = !data.customImage && data.pet === pet.id;
+    div.className = 'pet-option' + (isSelected ? ' selected' : '');
+    div.innerHTML = `${pet.svg}<div class="name">${pet.name}</div>${pet.meme ? `<div class="meme">${pet.meme}</div>` : ''}`;
+    div.addEventListener('click', () => {
+      data.pet = pet.id;
+      data.customImage = null; // 選插畫就清掉自訂圖
+      saveAll();
+      renderPlayer();
+      toast(`🐾 選擇了 ${pet.name}！`);
+    });
+    grid.appendChild(div);
+  });
+}
+
+function renderGrid() {
+  const data = allData[currentPlayer];
+  const gridEl = document.getElementById('grid');
+  gridEl.innerHTML = '';
+
+  const lines = data.locked ? LINES.filter(l => l.every(i => data.checked[i])) : [];
+  const inLineSet = new Set();
+  lines.forEach(l => l.forEach(i => inLineSet.add(i)));
+
+  data.order.forEach((goalIdx, pos) => {
+    const cell = document.createElement('div');
+    cell.className = 'cell';
+    const isCenter = (pos === 4);
+
+    if (isCenter) cell.classList.add('center');
+    if (data.locked && data.checked[pos]) cell.classList.add('checked');
+    if (data.locked && inLineSet.has(pos)) cell.classList.add('in-line');
+
+    if (!data.locked) {
+      const ta = document.createElement('textarea');
+      ta.value = data.goals[goalIdx] || '';
+      ta.placeholder = isCenter ? '自由格 / 主題' : `目標 ${pos+1}`;
+      ta.maxLength = 40;
+      ta.addEventListener('input', (e) => {
+        data.goals[goalIdx] = e.target.value;
+      });
+      cell.appendChild(ta);
+    } else {
+      const div = document.createElement('div');
+      div.className = 'text-display';
+      div.textContent = data.goals[goalIdx] || '—';
+      cell.appendChild(div);
+      cell.addEventListener('click', () => {
+        data.checked[pos] = !data.checked[pos];
+        saveAll();
+        renderGrid();
+        updateStatus();
+      });
+    }
+    gridEl.appendChild(cell);
+  });
+
+  updateStatus();
+}
+
+function updateStatus() {
+  const data = allData[currentPlayer];
+  const statusBar = document.getElementById('statusBar');
+  const badge = document.getElementById('stageBadge');
+  const notice = document.getElementById('mainNotice');
+  const shuffleBtn = document.getElementById('shuffleBtn');
+  const saveBtn = document.getElementById('saveBtn');
+
+  if (data.locked) {
+    const lines = countLines(data);
+    statusBar.style.display = 'flex';
+    document.getElementById('linesCount').textContent = lines;
+    document.getElementById('checkedCount').textContent = data.checked.filter(Boolean).length;
+    badge.textContent = '🔒 已鎖定';
+    badge.classList.add('locked');
+    notice.textContent = '✅ 位置鎖定！達成就點格子打勾 ✓';
+  } else {
+    statusBar.style.display = 'none';
+    badge.textContent = '編輯中';
+    badge.classList.remove('locked');
+    notice.textContent = '👆 填完 9 格 → 存檔 → 按「排亂」鎖定位置';
+  }
+
+  const allFilled = data.goals.every(g => g && g.trim());
+  shuffleBtn.disabled = !allFilled || data.shuffled || data.locked;
+  saveBtn.disabled = data.locked;
+}
+
+function shuffleCurrent() {
+  const data = allData[currentPlayer];
+  if (data.shuffled || data.locked) return;
+  const outer = [0,1,2,3,5,6,7,8];
+  for (let i = outer.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [outer[i], outer[j]] = [outer[j], outer[i]];
+  }
+  const newOrder = [];
+  let o = 0;
+  for (let pos = 0; pos < 9; pos++) {
+    if (pos === 4) newOrder.push(4);
+    else newOrder.push(outer[o++]);
+  }
+  data.order = newOrder;
+  data.shuffled = true;
+  data.locked = true;
+  saveAll();
+  renderGrid();
+  toast('🎲 排亂完成，已鎖定！');
+}
+
+// ========== 圖片壓縮工具 ==========
+// 避免 localStorage 超出 5MB 限制，把上傳的圖片壓縮成 400x400 以下
+function compressImage(file, maxSize = 400, quality = 0.85) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        // 等比縮放、從中心裁切成正方形
+        const size = Math.min(img.width, img.height);
+        const sx = (img.width - size) / 2;
+        const sy = (img.height - size) / 2;
+        const outSize = Math.min(size, maxSize);
+
+        const canvas = document.createElement('canvas');
+        canvas.width = outSize;
+        canvas.height = outSize;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, sx, sy, size, size, 0, 0, outSize, outSize);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.onerror = reject;
+      img.src = e.target.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+// 暫存剛上傳、還沒確認使用的圖片
+let pendingCustomImage = null;
+
+// ========== 事件綁定 ==========
+document.getElementById('backBtn').addEventListener('click', exitPlayer);
+
+// 自訂迷因圖上傳
+document.getElementById('uploadBtn').addEventListener('click', () => {
+  document.getElementById('customPetUpload').click();
+});
+
+document.getElementById('customPetUpload').addEventListener('change', async (e) => {
+  const file = e.target.files && e.target.files[0];
+  if (!file) return;
+  if (!file.type.startsWith('image/')) {
+    toast('⚠️ 請選擇圖片檔案');
+    return;
+  }
+  try {
+    const dataUrl = await compressImage(file, 400, 0.85);
+    pendingCustomImage = dataUrl;
+    document.getElementById('customPreviewImg').src = dataUrl;
+    document.getElementById('customPreview').style.display = 'block';
+    toast('📸 預覽成功，點下方按鈕確認使用');
+  } catch (err) {
+    console.error(err);
+    toast('⚠️ 圖片處理失敗');
+  }
+});
+
+document.getElementById('useCustomBtn').addEventListener('click', () => {
+  if (!pendingCustomImage) return;
+  const data = allData[currentPlayer];
+  data.customImage = pendingCustomImage;
+  data.pet = null; // 清掉插畫選擇
+  try {
+    saveAll();
+  } catch (err) {
+    // localStorage 滿了
+    toast('⚠️ 儲存失敗，圖片可能太大');
+    return;
+  }
+  pendingCustomImage = null;
+  renderPlayer();
+  toast('✅ 已使用你的迷因圖當頭像！');
+});
+
+document.getElementById('changePetBtn').addEventListener('click', () => {
+  const picker = document.getElementById('petPicker');
+  picker.style.display = picker.style.display === 'none' ? 'block' : 'none';
+  if (picker.style.display === 'block') {
+    picker.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+});
+
+document.getElementById('saveBtn').addEventListener('click', () => {
+  saveAll();
+  toast('💾 已儲存');
+});
+
+document.getElementById('shuffleBtn').addEventListener('click', () => {
+  if (!confirm('確定要排亂嗎？只能用一次，排完就永久鎖定位置！')) return;
+  saveAll();
+  shuffleCurrent();
+});
+
+document.getElementById('resetBtn').addEventListener('click', () => {
+  if (!confirm(`確定要重置「${currentPlayer}」的所有資料嗎？`)) return;
+  allData[currentPlayer] = defaultPlayerData();
+  saveAll();
+  renderPlayer();
+  toast('🔄 已重置');
+});
+
+// ========== 手機桌布 ==========
+const PHONE_MODELS = [
+  { id: 'iphone15_pro_max', name: 'iPhone 16/15 Pro Max', w: 1290, h: 2796 },
+  { id: 'iphone15_pro',     name: 'iPhone 16/15 Pro',      w: 1179, h: 2556 },
+  { id: 'iphone15',         name: 'iPhone 15/14',         w: 1179, h: 2556 },
+  { id: 'iphone13_14',      name: 'iPhone 13/14 (標準)',   w: 1170, h: 2532 },
+  { id: 'iphone_mini',      name: 'iPhone 13 mini',       w: 1080, h: 2340 },
+  { id: 'iphone_se',        name: 'iPhone SE',            w: 750,  h: 1334 },
+  { id: 'samsung_s24_ultra',name: 'Samsung S24 Ultra',    w: 1440, h: 3120 },
+  { id: 'samsung_s24',      name: 'Samsung S24/S23',      w: 1080, h: 2340 },
+  { id: 'samsung_fold',     name: 'Samsung Z Fold',       w: 2176, h: 1812 },
+  { id: 'pixel_8_pro',      name: 'Pixel 8 Pro',          w: 1344, h: 2992 },
+  { id: 'pixel_8',          name: 'Pixel 8/7',            w: 1080, h: 2400 },
+  { id: 'xiaomi',           name: '小米 / Redmi',         w: 1080, h: 2400 },
+  { id: 'huawei',           name: '華為 / OPPO / vivo',   w: 1080, h: 2400 },
+  { id: 'general_1080p',    name: '通用 1080p',           w: 1080, h: 1920 },
+  { id: 'general_2k',       name: '通用 2K',              w: 1440, h: 2560 }
+];
+
+// 載入手機型號
+const phoneSel = document.getElementById('phoneModel');
+PHONE_MODELS.forEach(m => {
+  const opt = document.createElement('option');
+  opt.value = m.id;
+  opt.textContent = `${m.name}（${m.w} × ${m.h}）`;
+  phoneSel.appendChild(opt);
+});
+phoneSel.value = 'iphone15_pro_max';
+
+// 將 SVG 字串轉為可繪製到 canvas 的 Image
+function svgToImage(svgStr) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const blob = new Blob([svgStr], { type: 'image/svg+xml;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    img.onload = () => { URL.revokeObjectURL(url); resolve(img); };
+    img.onerror = (e) => { URL.revokeObjectURL(url); reject(e); };
+    img.src = url;
+  });
+}
+
+// 圓角矩形
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+}
+
+// 文字換行
+function wrapText(ctx, text, x, y, maxWidth, lineHeight, maxLines) {
+  if (!text) return;
+  const chars = Array.from(text);
+  const lines = [];
+  let cur = '';
+  for (const ch of chars) {
+    const test = cur + ch;
+    if (ctx.measureText(test).width > maxWidth && cur) {
+      lines.push(cur);
+      cur = ch;
+      if (lines.length === maxLines) break;
+    } else {
+      cur = test;
+    }
+  }
+  if (cur && lines.length < maxLines) lines.push(cur);
+  const totalH = lines.length * lineHeight;
+  const startY = y - totalH / 2 + lineHeight / 2;
+  lines.forEach((l, i) => {
+    ctx.fillText(l, x, startY + i * lineHeight);
+  });
+}
+
+async function renderWallpaper(modelId) {
+  const model = PHONE_MODELS.find(m => m.id === modelId);
+  const W = model.w, H = model.h;
+  const canvas = document.getElementById('wallpaperCanvas');
+  canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext('2d');
+
+  const data = allData[currentPlayer];
+  const pet = data.pet ? PETS.find(p => p.id === data.pet) : null;
+
+  // 橫向模式判斷（摺疊機）
+  const isLandscape = W > H;
+
+  // 背景漸層
+  const bg = ctx.createLinearGradient(0, 0, W, H);
+  bg.addColorStop(0, '#fff4e6');
+  bg.addColorStop(0.5, '#ffe8f0');
+  bg.addColorStop(1, '#e8f4ff');
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, W, H);
+
+  // 背景裝飾圓
+  ctx.fillStyle = 'rgba(255, 183, 197, 0.35)';
+  ctx.beginPath();
+  ctx.arc(W * 0.9, H * 0.08, Math.min(W, H) * 0.3, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = 'rgba(173, 216, 255, 0.35)';
+  ctx.beginPath();
+  ctx.arc(W * 0.1, H * 0.92, Math.min(W, H) * 0.3, 0, Math.PI * 2);
+  ctx.fill();
+
+  const scale = Math.min(W, H) / 1080; // 以 1080 為基準縮放字型
+
+  // 頂部 safe area
+  const topPad = H * 0.08;
+
+  // === 標題區 ===
+  ctx.fillStyle = '#3d3142';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.font = `900 ${60 * scale}px "Noto Sans TC", sans-serif`;
+  ctx.fillText('🎯 我的 9 宮格 Bingo', W / 2, topPad + 30 * scale);
+
+  // 玩家 + 寵物
+  const avatarSize = 180 * scale;
+  const avatarY = topPad + 130 * scale;
+
+  // 白色圓形底
+  ctx.fillStyle = '#fff';
+  ctx.beginPath();
+  ctx.arc(W / 2, avatarY + avatarSize / 2, avatarSize / 2 + 8 * scale, 0, Math.PI * 2);
+  ctx.shadowColor = 'rgba(120, 80, 140, 0.15)';
+  ctx.shadowBlur = 20 * scale;
+  ctx.fill();
+  ctx.shadowBlur = 0;
+
+  // 寵物（優先自訂圖片，其次 SVG 插畫）
+  if (data.customImage) {
+    try {
+      const img = new Image();
+      await new Promise((res, rej) => { img.onload = res; img.onerror = rej; img.src = data.customImage; });
+      // 圓形裁切
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(W / 2, avatarY + avatarSize / 2, avatarSize / 2, 0, Math.PI * 2);
+      ctx.closePath();
+      ctx.clip();
+      ctx.drawImage(img, W / 2 - avatarSize / 2, avatarY, avatarSize, avatarSize);
+      ctx.restore();
+    } catch(e) { console.warn(e); }
+  } else if (pet) {
+    try {
+      const img = await svgToImage(pet.svg);
+      ctx.drawImage(img, W / 2 - avatarSize / 2, avatarY, avatarSize, avatarSize);
+    } catch(e) { console.warn(e); }
+  } else {
+    ctx.fillStyle = '#b8acc2';
+    ctx.font = `900 ${100 * scale}px sans-serif`;
+    ctx.fillText('?', W / 2, avatarY + avatarSize / 2);
+  }
+
+  // 名字
+  ctx.fillStyle = '#3d3142';
+  ctx.font = `900 ${72 * scale}px "Noto Sans TC", sans-serif`;
+  ctx.fillText(currentPlayer, W / 2, avatarY + avatarSize + 55 * scale);
+
+  // 寵物名
+  const petDisplayName = data.customImage ? 'My Custom Meme' : (pet ? pet.name : null);
+  if (petDisplayName) {
+    ctx.fillStyle = '#5a5a5a';
+    ctx.font = `600 ${34 * scale}px "Noto Sans TC", sans-serif`;
+    ctx.fillText(`🐾 ${petDisplayName}`, W / 2, avatarY + avatarSize + 110 * scale);
+  }
+
+  // === 9 宮格 ===
+  const gridTop = avatarY + avatarSize + 170 * scale;
+  const gridPad = W * 0.08;
+  const gridSize = W - gridPad * 2;
+  const cellGap = 16 * scale;
+  const cellSize = (gridSize - cellGap * 2) / 3;
+
+  const lines = data.locked ? LINES.filter(l => l.every(i => data.checked[i])) : [];
+  const inLineSet = new Set();
+  lines.forEach(l => l.forEach(i => inLineSet.add(i)));
+
+  for (let i = 0; i < 9; i++) {
+    const col = i % 3;
+    const row = Math.floor(i / 3);
+    const x = gridPad + col * (cellSize + cellGap);
+    const y = gridTop + row * (cellSize + cellGap);
+    const goalIdx = data.order[i];
+    const goalText = data.goals[goalIdx] || '—';
+    const isCenter = (i === 4);
+    const isChecked = data.locked && data.checked[i];
+    const isInLine = inLineSet.has(i);
+
+    // 背景
+    if (isCenter) {
+      const g = ctx.createLinearGradient(x, y, x + cellSize, y + cellSize);
+      g.addColorStop(0, '#ffb088');
+      g.addColorStop(1, '#ffd76b');
+      ctx.fillStyle = g;
+    } else if (isChecked) {
+      const g = ctx.createLinearGradient(x, y, x + cellSize, y + cellSize);
+      g.addColorStop(0, '#a8e8cd');
+      g.addColorStop(1, '#7ad4b8');
+      ctx.fillStyle = g;
+    } else {
+      ctx.fillStyle = '#ffffff';
+    }
+
+    ctx.shadowColor = 'rgba(120, 80, 140, 0.1)';
+    ctx.shadowBlur = 12 * scale;
+    ctx.shadowOffsetY = 4 * scale;
+    roundRect(ctx, x, y, cellSize, cellSize, 24 * scale);
+    ctx.fill();
+    ctx.shadowBlur = 0;
+    ctx.shadowOffsetY = 0;
+
+    // 連線發光邊
+    if (isInLine) {
+      ctx.strokeStyle = '#ffd76b';
+      ctx.lineWidth = 6 * scale;
+      roundRect(ctx, x, y, cellSize, cellSize, 24 * scale);
+      ctx.stroke();
+    }
+
+    // 勾勾
+    if (isChecked) {
+      ctx.fillStyle = '#fff';
+      ctx.font = `900 ${44 * scale}px sans-serif`;
+      ctx.textAlign = 'right';
+      ctx.fillText('✓', x + cellSize - 14 * scale, y + 20 * scale);
+    }
+
+    // 文字
+    ctx.fillStyle = (isCenter || isChecked) ? '#fff' : '#3d3142';
+    ctx.font = `700 ${Math.min(28, cellSize / 8) * scale}px "Noto Sans TC", sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    const lineH = Math.min(32, cellSize / 7) * scale;
+    wrapText(ctx, goalText, x + cellSize / 2, y + cellSize / 2, cellSize - 20 * scale, lineH, 4);
+  }
+
+  // === 底部倒數 ===
+  const footerY = gridTop + cellSize * 3 + cellGap * 2 + 80 * scale;
+  const now = new Date();
+  const diff = DEADLINE - now;
+  const days = Math.max(0, Math.floor(diff / 86400000));
+
+  ctx.fillStyle = '#3d3142';
+  ctx.textAlign = 'center';
+  ctx.font = `800 ${48 * scale}px "Noto Sans TC", sans-serif`;
+  ctx.fillText(`⏳ 距離 7/19 還有 ${days} 天`, W / 2, footerY);
+
+  ctx.fillStyle = '#ff7a8a';
+  ctx.font = `700 ${32 * scale}px "Noto Sans TC", sans-serif`;
+  ctx.fillText(`連線數：${lines.length} 條 · 已達成 ${data.checked.filter(Boolean).length}/9`, W / 2, footerY + 60 * scale);
+
+  ctx.fillStyle = '#b8acc2';
+  ctx.font = `600 ${26 * scale}px "Noto Sans TC", sans-serif`;
+  ctx.fillText('2026 Bingo Challenge · 晴方 · 郁淳 · 金妮 · 原價', W / 2, footerY + 110 * scale);
+
+  // 顯示預覽
+  document.getElementById('wallpaperPreviewBox').style.display = 'block';
+  document.getElementById('wallpaperSize').textContent = `${model.name} · ${W} × ${H}px`;
+  document.getElementById('downloadWallpaperBtn').disabled = false;
+}
+
+document.getElementById('genWallpaperBtn').addEventListener('click', async () => {
+  const btn = document.getElementById('genWallpaperBtn');
+  btn.disabled = true;
+  btn.textContent = '生成中...';
+  try {
+    await renderWallpaper(phoneSel.value);
+    toast('🎨 預覽已生成！');
+  } catch (e) {
+    console.error(e);
+    toast('⚠️ 生成失敗');
+  }
+  btn.disabled = false;
+  btn.textContent = '🎨 生成預覽';
+});
+
+document.getElementById('downloadWallpaperBtn').addEventListener('click', () => {
+  const canvas = document.getElementById('wallpaperCanvas');
+  const model = PHONE_MODELS.find(m => m.id === phoneSel.value);
+  canvas.toBlob((blob) => {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `bingo-${currentPlayer}-${model.id}.png`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    toast('⬇️ 已下載！');
+  }, 'image/png');
+});
+
+// 切換型號時清空預覽
+phoneSel.addEventListener('change', () => {
+  document.getElementById('wallpaperPreviewBox').style.display = 'none';
+  document.getElementById('downloadWallpaperBtn').disabled = true;
+});
+
+// ========== 初始化 ==========
+loadAll();
+renderHome();
+updateCountdown();
+setInterval(updateCountdown, 1000);
+</script>
+</body>
+</html>
