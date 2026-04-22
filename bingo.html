@@ -955,6 +955,50 @@
     transform: translateX(-50%) translateY(0);
   }
 
+  /* 同步狀態 banner */
+  .sync-banner {
+    background: #fff;
+    border: 2px solid var(--orange);
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    box-shadow: var(--shadow);
+  }
+  .sync-banner.synced {
+    background: linear-gradient(90deg, #e8f8ee, #f5fff8);
+    border-color: var(--success);
+    color: var(--success);
+  }
+  .sync-banner.offline {
+    background: #fff4ea;
+    color: var(--orange);
+  }
+  .sync-banner .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--orange);
+    animation: blink 1.4s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+  .sync-banner.synced .dot { background: var(--success); }
+  @keyframes blink { 0%,100% { opacity: 1 } 50% { opacity: 0.4 } }
+  @keyframes pulse-share {
+    0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(232, 122, 46, 0.6); }
+    50% { transform: scale(1.08); box-shadow: 0 0 0 10px rgba(232, 122, 46, 0); }
+  }
+  .sync-banner .setup-link {
+    color: var(--orange);
+    text-decoration: underline;
+    cursor: pointer;
+    font-weight: 900;
+  }
+
   footer {
     text-align: center;
     color: var(--muted);
@@ -1140,6 +1184,15 @@
       </div>
     </div>
 
+    <!-- 雲端同步狀態 -->
+    <div class="sync-banner offline" id="syncBanner">
+      <div style="display:flex; align-items:center; gap:10px; flex: 1; min-width: 0;">
+        <div class="dot"></div>
+        <span id="syncText" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">連線中...</span>
+      </div>
+      <button id="shareRoomBtn" style="background:var(--orange); color:white; border:none; padding:6px 14px; border-radius:6px; font-size:0.75rem; font-weight:900; cursor:pointer; letter-spacing:0.5px; flex-shrink:0; font-family:inherit; box-shadow:none; min-width:auto; text-transform:none;">📋 複製分享連結</button>
+    </div>
+
     <!-- Hero -->
     <div class="hero">
       <div class="hero-orange-panel">
@@ -1289,6 +1342,7 @@
   <footer>CH·T MINI · 2026 BINGO CHALLENGE · 晴方 / 郁淳 / 金妮 / 原價 / 小湘</footer>
 </div>
 
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -1328,9 +1382,19 @@ const PLAYERS = [
 
 const DEADLINE = new Date('2026-07-19T23:59:59+08:00');
 const STORAGE_KEY = 'bingo_4p_v1';
+const ROOM_KEY = 'bingo_room_v1';
 
-// 全域狀態：四人資料
+// 全域狀態：五人資料
 let allData = {};
+
+// ===== 雲端同步（jsonblob.com 公開 JSON 儲存，無需註冊） =====
+const SYNC_ENDPOINT = 'https://jsonblob.com/api/jsonBlob';
+let ROOM_ID = null;          // 目前房間的 blob ID
+let cloudConnected = false;  // 是否連上雲端
+let pollTimer = null;        // 輪詢 timer
+let saveDebounceTimer = null;
+let lastPushedHash = '';     // 避免重複推送
+let skipNextPoll = false;    // 剛推送完，略過下一次拉取
 
 function defaultPlayerData() {
   return {
@@ -1355,7 +1419,173 @@ function loadAll() {
 }
 
 function saveAll() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(allData));
+  // 本機永遠先存
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(allData));
+  } catch (e) { console.warn('localStorage save failed', e); }
+
+  // 雲端同步（debounce，避免打字每個字都送）
+  if (cloudConnected && ROOM_ID) {
+    clearTimeout(saveDebounceTimer);
+    saveDebounceTimer = setTimeout(() => pushToCloud(), 500);
+  }
+}
+
+// ========== 雲端同步狀態 UI ==========
+function setSyncStatus(state, text) {
+  const banner = document.getElementById('syncBanner');
+  const txt = document.getElementById('syncText');
+  if (!banner) return;
+  banner.classList.remove('offline', 'synced');
+  banner.classList.add(state);
+  if (txt) txt.textContent = text;
+}
+
+// ========== 推送 / 拉取 ==========
+async function pushToCloud() {
+  if (!ROOM_ID) return;
+  const body = JSON.stringify(allData);
+  if (body === lastPushedHash) return;
+  try {
+    const res = await fetch(SYNC_ENDPOINT + '/' + ROOM_ID, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body
+    });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    lastPushedHash = body;
+    skipNextPoll = true;
+  } catch (e) {
+    console.warn('雲端推送失敗:', e);
+    setSyncStatus('offline', '雲端暫時無法連線（本機仍可用）');
+  }
+}
+
+async function pullFromCloud() {
+  if (!ROOM_ID) return;
+  if (skipNextPoll) { skipNextPoll = false; return; }
+  try {
+    const res = await fetch(SYNC_ENDPOINT + '/' + ROOM_ID, {
+      method: 'GET',
+      headers: { 'Accept': 'application/json' },
+      cache: 'no-store'
+    });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const remote = await res.json();
+    const remoteHash = JSON.stringify(remote);
+    // 和目前本機一樣就不動
+    if (remoteHash === JSON.stringify(allData)) return;
+    // 有變動 → 套用
+    allData = remote;
+    PLAYERS.forEach(p => {
+      if (!allData[p.key]) allData[p.key] = defaultPlayerData();
+    });
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(allData)); } catch(e) {}
+    lastPushedHash = remoteHash;
+    renderHome();
+    if (currentPlayer) renderPlayer();
+  } catch (e) {
+    console.warn('雲端拉取失敗:', e);
+  }
+}
+
+// ========== 建立 / 加入 房間 ==========
+async function createRoom() {
+  try {
+    const res = await fetch(SYNC_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify(allData)
+    });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    // jsonblob 在 Location header 回傳新 blob 的 URL
+    const loc = res.headers.get('Location') || '';
+    const match = loc.match(/\/([A-Za-z0-9]+)\/?$/);
+    if (!match) throw new Error('無法從 Location 取得 ID');
+    return match[1];
+  } catch (e) {
+    console.error('建立房間失敗:', e);
+    return null;
+  }
+}
+
+async function initCloudSync() {
+  // 1. 取得 room ID：優先 URL query，其次 localStorage
+  const urlRoom = new URLSearchParams(location.search).get('room');
+  let roomId = urlRoom || localStorage.getItem(ROOM_KEY);
+  let createdNew = false;
+
+  setSyncStatus('offline', '☁️ 連線雲端中...');
+
+  // 2. 如果有 URL 指定房間 → 先試著拉
+  if (urlRoom) {
+    roomId = urlRoom;
+    localStorage.setItem(ROOM_KEY, roomId);
+  } else if (roomId) {
+    // 本機有儲存 → 沿用，補上 URL 參數（方便分享）
+    const newUrl = location.pathname + '?room=' + roomId + location.hash;
+    history.replaceState(null, '', newUrl);
+  } else {
+    // 3. 都沒有 → 建立新房間
+    roomId = await createRoom();
+    if (!roomId) {
+      setSyncStatus('offline', '❌ 雲端連線失敗（本機模式）');
+      return;
+    }
+    localStorage.setItem(ROOM_KEY, roomId);
+    // 把 room ID 寫到 URL，讓使用者可以直接複製
+    const newUrl = location.pathname + '?room=' + roomId + location.hash;
+    history.replaceState(null, '', newUrl);
+    createdNew = true;
+  }
+
+  ROOM_ID = roomId;
+  cloudConnected = true;
+
+  // 4. 先拉一次遠端資料
+  await pullFromCloud();
+
+  // 5. 開始輪詢（每 5 秒）
+  if (pollTimer) clearInterval(pollTimer);
+  pollTimer = setInterval(pullFromCloud, 5000);
+
+  setSyncStatus('synced', '☁️ 雲端同步中 · 5 人資料互通');
+
+  // 6. 頁面切回前景時也立刻拉一次
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') pullFromCloud();
+  });
+
+  // 7. 如果是第一次建立房間 → 提醒使用者分享連結
+  if (createdNew) {
+    setTimeout(() => {
+      const shareBtn = document.getElementById('shareRoomBtn');
+      if (shareBtn) {
+        shareBtn.style.animation = 'pulse-share 1.2s ease-in-out 3';
+      }
+      toast('🎉 你的房間已建立！點右上「複製分享連結」給朋友');
+    }, 800);
+  }
+}
+
+// 分享連結
+function copyShareLink() {
+  const url = location.origin + location.pathname + (ROOM_ID ? '?room=' + ROOM_ID : '');
+  const fallback = () => {
+    const ta = document.createElement('textarea');
+    ta.value = url;
+    ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); } catch(e) {}
+    document.body.removeChild(ta);
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(url).catch(fallback);
+  } else {
+    fallback();
+  }
+  toast('📋 已複製！把連結丟到群組給大家');
 }
 
 // ========== 連線偵測 ==========
@@ -2048,11 +2278,17 @@ phoneSel.addEventListener('change', () => {
   document.getElementById('downloadWallpaperBtn').disabled = true;
 });
 
+// 複製分享連結按鈕
+document.getElementById('shareRoomBtn').addEventListener('click', copyShareLink);
+
 // ========== 初始化 ==========
 loadAll();
 renderHome();
 updateCountdown();
 setInterval(updateCountdown, 1000);
+
+// 啟動雲端同步（自動建立 / 加入房間）
+initCloudSync();
 </script>
 </body>
 </html>
