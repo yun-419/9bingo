@@ -7,6 +7,11 @@
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="default" />
 <title>🎯 5人 Bingo 挑戰賽｜2026/7/19 結算</title>
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+<!-- Firebase 設定（管理員編輯此檔 → 全部 5 人自動同步） -->
+<script src="./config.js"></script>
 <style>
   :root {
     --bg-1: #fdeadb;
@@ -1185,10 +1190,10 @@
     </div>
 
     <!-- 雲端同步狀態 -->
-    <div class="sync-banner offline" id="syncBanner">
-      <div style="display:flex; align-items:center; gap:10px; flex: 1; min-width: 0;">
-        <div class="dot"></div>
-        <span id="syncText" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">連線中...</span>
+    <div class="sync-banner offline" id="syncBanner" style="flex-wrap:wrap;">
+      <div style="display:flex; align-items:center; gap:10px; flex: 1; min-width: 200px;">
+        <div class="dot" style="flex-shrink:0;"></div>
+        <span id="syncText" style="word-break:break-all; line-height:1.4;">連線中...</span>
       </div>
       <button id="shareRoomBtn" style="background:var(--orange); color:white; border:none; padding:6px 14px; border-radius:6px; font-size:0.75rem; font-weight:900; cursor:pointer; letter-spacing:0.5px; flex-shrink:0; font-family:inherit; box-shadow:none; min-width:auto; text-transform:none;">📋 複製分享連結</button>
     </div>
@@ -1342,6 +1347,45 @@
   <footer>CH·T MINI · 2026 BINGO CHALLENGE · 晴方 / 郁淳 / 金妮 / 原價 / 小湘</footer>
 </div>
 
+<!-- Firebase 設定彈窗 -->
+<div id="setupModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.55); z-index:2000; align-items:flex-start; justify-content:center; padding:20px; overflow-y:auto;">
+  <div style="background:white; border-radius:20px; max-width:560px; width:100%; padding:22px; margin:20px 0; box-shadow:0 20px 60px rgba(0,0,0,0.3); box-sizing:border-box;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+      <h3 style="font-size:1.15rem; font-weight:900; letter-spacing:0.5px; margin:0;">☁️ 設定 Firebase 雲端同步</h3>
+      <button onclick="closeSetupModal()" style="background:none; border:none; font-size:1.3rem; cursor:pointer; color:#999; padding:0; min-width:auto; box-shadow:none; text-transform:none;">✕</button>
+    </div>
+    <div style="color:var(--text-soft); font-size:0.85rem; line-height:1.55; margin-bottom:14px;">
+      五個人要看到彼此資料，需要共用同一個 Firebase 專案。<strong style="color:var(--orange)">只需一個人設定一次</strong>，之後其他人點「複製分享連結」拿到的網址會自動帶上設定，點一下就自動連線 ☁️
+    </div>
+
+    <label style="display:block; font-size:0.75rem; font-weight:900; margin-bottom:6px; color:var(--orange); letter-spacing:1px;">貼上 FIREBASE CONFIG（整段，含大括號）</label>
+    <textarea id="fbConfigInput" rows="9" placeholder='貼上像這樣：&#10;{&#10;  apiKey: "AIza...",&#10;  authDomain: "xxx.firebaseapp.com",&#10;  databaseURL: "https://xxx-default-rtdb.firebaseio.com",&#10;  projectId: "xxx",&#10;  storageBucket: "xxx.appspot.com",&#10;  messagingSenderId: "...",&#10;  appId: "..."&#10;}' style="width:100%; padding:11px; border:2px solid var(--border); border-radius:10px; font-family:ui-monospace,Menlo,Consolas,monospace; font-size:0.78rem; resize:vertical; box-sizing:border-box; line-height:1.45;"></textarea>
+
+    <div style="display:flex; gap:8px; margin-top:14px;">
+      <button class="btn-primary" style="flex:1;" onclick="saveFirebaseConfig()">✓ 儲存並連線</button>
+      <button class="btn-secondary" style="flex:1;" onclick="closeSetupModal()">取消</button>
+    </div>
+
+    <div id="fbSetupError" style="display:none; margin-top:12px; padding:10px 12px; background:#ffe4e4; color:#b02424; border-radius:8px; font-size:0.8rem; word-break:break-all;"></div>
+
+    <details style="margin-top:18px; font-size:0.85rem;">
+      <summary style="cursor:pointer; font-weight:900; color:var(--orange); padding:8px 0; letter-spacing:0.5px;">📖 從零建立 Firebase 專案（點展開 · 首次設定需 5 分鐘）</summary>
+      <ol style="padding-left:22px; color:var(--text-soft); line-height:1.7; margin-top:6px;">
+        <li>打開 <a href="https://console.firebase.google.com" target="_blank" style="color:var(--orange); font-weight:700;">console.firebase.google.com</a>，用 Google 登入</li>
+        <li>點 <strong>Add project</strong> → 輸入名稱（例如 bingo-2026）→ 關閉 Analytics → Create</li>
+        <li>左側選單 <strong>Build → Realtime Database</strong> → Create Database</li>
+        <li>地區選 <strong>asia-southeast1 (Singapore)</strong> → 選 <strong>Start in test mode</strong> → Enable</li>
+        <li>回首頁，點齒輪 ⚙️ → <strong>Project settings</strong></li>
+        <li>捲到下方 <strong>Your apps</strong> → 點 <strong>&lt;/&gt; 網頁圖示</strong> → 取名 → Register app</li>
+        <li>複製跳出的 <code>firebaseConfig = &#123; ... &#125;</code> 貼進上面框框 → 按「儲存並連線」</li>
+        <li>✅ 之後你按「複製分享連結」拿到的網址會自帶設定，其他 4 人點連結自動連線</li>
+      </ol>
+      <div style="background:#fff4ea; border-left:3px solid var(--orange); padding:10px 12px; margin-top:10px; border-radius:6px; color:var(--text-soft); font-size:0.8rem; line-height:1.5;">
+        💡 30 天後 test mode 過期 → 到 Realtime Database → Rules，把內容改成 <code style="background:white; padding:2px 5px; border-radius:3px;">{"rules":{".read":true,".write":true}}</code> → Publish
+      </div>
+    </details>
+  </div>
+</div>
 
 <div class="toast" id="toast"></div>
 
@@ -1387,14 +1431,46 @@ const ROOM_KEY = 'bingo_room_v1';
 // 全域狀態：五人資料
 let allData = {};
 
-// ===== 雲端同步（jsonblob.com 公開 JSON 儲存，無需註冊） =====
-const SYNC_ENDPOINT = 'https://jsonblob.com/api/jsonBlob';
-let ROOM_ID = null;          // 目前房間的 blob ID
-let cloudConnected = false;  // 是否連上雲端
-let pollTimer = null;        // 輪詢 timer
+// ===== 雲端同步（Firebase Realtime Database） =====
+const FB_CONFIG_KEY = 'bingo_fb_config_v2';
+let FB_CONFIG = null;
+let fbApp = null, fbDb = null, fbRef = null;
+let cloudConnected = false;
+let ROOM_ID = null;
 let saveDebounceTimer = null;
-let lastPushedHash = '';     // 避免重複推送
-let skipNextPoll = false;    // 剛推送完，略過下一次拉取
+let skipNextRemote = false;
+
+function importConfigFromHash() {
+  const m = (location.hash || '').match(/#fb=([A-Za-z0-9+/=_\-]+)/);
+  if (!m) return null;
+  try {
+    const decoded = atob(decodeURIComponent(m[1]).replace(/-/g,'+').replace(/_/g,'/'));
+    const cfg = JSON.parse(decoded);
+    if (cfg && cfg.apiKey && cfg.databaseURL) {
+      localStorage.setItem(FB_CONFIG_KEY, JSON.stringify(cfg));
+      history.replaceState(null, '', location.pathname + location.search);
+      return cfg;
+    }
+  } catch (e) { console.warn('hash config 解析失敗', e); }
+  return null;
+}
+
+function loadSavedConfig() {
+  try {
+    const raw = localStorage.getItem(FB_CONFIG_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch (e) {}
+  return null;
+}
+
+// 讀 config.js 檔案裡的內建設定（管理員設好後全部人共用）
+function loadBuiltInConfig() {
+  if (typeof window !== 'undefined' && window.FIREBASE_CONFIG_BUILT_IN) {
+    const cfg = window.FIREBASE_CONFIG_BUILT_IN;
+    if (cfg && cfg.apiKey && cfg.databaseURL) return cfg;
+  }
+  return null;
+}
 
 function defaultPlayerData() {
   return {
@@ -1423,12 +1499,8 @@ function saveAll() {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(allData));
   } catch (e) { console.warn('localStorage save failed', e); }
-
-  // 雲端同步（debounce，避免打字每個字都送）
-  if (cloudConnected && ROOM_ID) {
-    clearTimeout(saveDebounceTimer);
-    saveDebounceTimer = setTimeout(() => pushToCloud(), 500);
-  }
+  // 雲端推送
+  pushToCloud();
 }
 
 // ========== 雲端同步狀態 UI ==========
@@ -1441,136 +1513,167 @@ function setSyncStatus(state, text) {
   if (txt) txt.textContent = text;
 }
 
-// ========== 推送 / 拉取 ==========
-async function pushToCloud() {
-  if (!ROOM_ID) return;
-  const body = JSON.stringify(allData);
-  if (body === lastPushedHash) return;
-  try {
-    const res = await fetch(SYNC_ENDPOINT + '/' + ROOM_ID, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body
+// ========== Firebase：推送 / 拉取 ==========
+function pushToCloud() {
+  if (!cloudConnected || !fbRef) return;
+  clearTimeout(saveDebounceTimer);
+  saveDebounceTimer = setTimeout(() => {
+    skipNextRemote = true;
+    fbRef.set(allData).catch(err => {
+      console.error('推送失敗:', err);
+      setSyncStatus('offline', '推送失敗：' + (err.message || err.code || '未知'));
     });
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    lastPushedHash = body;
-    skipNextPoll = true;
-  } catch (e) {
-    console.warn('雲端推送失敗:', e);
-    setSyncStatus('offline', '雲端暫時無法連線（本機仍可用）');
-  }
+  }, 400);
 }
 
-async function pullFromCloud() {
-  if (!ROOM_ID) return;
-  if (skipNextPoll) { skipNextPoll = false; return; }
-  try {
-    const res = await fetch(SYNC_ENDPOINT + '/' + ROOM_ID, {
-      method: 'GET',
-      headers: { 'Accept': 'application/json' },
-      cache: 'no-store'
-    });
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    const remote = await res.json();
-    const remoteHash = JSON.stringify(remote);
-    // 和目前本機一樣就不動
-    if (remoteHash === JSON.stringify(allData)) return;
-    // 有變動 → 套用
+function attachCloudListener() {
+  if (!fbRef) return;
+  fbRef.on('value', (snap) => {
+    if (skipNextRemote) { skipNextRemote = false; return; }
+    const remote = snap.val();
+    if (!remote) {
+      // 雲端空 → 把本機當前資料推上去
+      if (Object.keys(allData).length > 0) {
+        skipNextRemote = true;
+        fbRef.set(allData).catch(e => console.error(e));
+      }
+      return;
+    }
     allData = remote;
     PLAYERS.forEach(p => {
       if (!allData[p.key]) allData[p.key] = defaultPlayerData();
     });
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(allData)); } catch(e) {}
-    lastPushedHash = remoteHash;
     renderHome();
     if (currentPlayer) renderPlayer();
-  } catch (e) {
-    console.warn('雲端拉取失敗:', e);
-  }
+  }, (err) => {
+    console.error('Firebase 監聽失敗:', err);
+    setSyncStatus('offline', '雲端監聽失敗：' + (err.message || err.code));
+  });
 }
 
-// ========== 建立 / 加入 房間 ==========
-async function createRoom() {
-  try {
-    const res = await fetch(SYNC_ENDPOINT, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify(allData)
-    });
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    // jsonblob 在 Location header 回傳新 blob 的 URL
-    const loc = res.headers.get('Location') || '';
-    const match = loc.match(/\/([A-Za-z0-9]+)\/?$/);
-    if (!match) throw new Error('無法從 Location 取得 ID');
-    return match[1];
-  } catch (e) {
-    console.error('建立房間失敗:', e);
-    return null;
-  }
-}
-
+// ========== 啟動 Firebase ==========
 async function initCloudSync() {
-  // 1. 取得 room ID：優先 URL query，其次 localStorage
-  const urlRoom = new URLSearchParams(location.search).get('room');
-  let roomId = urlRoom || localStorage.getItem(ROOM_KEY);
-  let createdNew = false;
+  const defaultRoom = (typeof window !== 'undefined' && window.BINGO_ROOM_NAME) || 'bingo-2026';
+  ROOM_ID = new URLSearchParams(location.search).get('room') || defaultRoom;
+
+  // 優先順序：config.js 內建 > URL hash > localStorage
+  const fromHash = importConfigFromHash();
+  FB_CONFIG = loadBuiltInConfig() || fromHash || loadSavedConfig();
 
   setSyncStatus('offline', '☁️ 連線雲端中...');
 
-  // 2. 如果有 URL 指定房間 → 先試著拉
-  if (urlRoom) {
-    roomId = urlRoom;
-    localStorage.setItem(ROOM_KEY, roomId);
-  } else if (roomId) {
-    // 本機有儲存 → 沿用，補上 URL 參數（方便分享）
-    const newUrl = location.pathname + '?room=' + roomId + location.hash;
-    history.replaceState(null, '', newUrl);
-  } else {
-    // 3. 都沒有 → 建立新房間
-    roomId = await createRoom();
-    if (!roomId) {
-      setSyncStatus('offline', '❌ 雲端連線失敗（本機模式）');
-      return;
-    }
-    localStorage.setItem(ROOM_KEY, roomId);
-    // 把 room ID 寫到 URL，讓使用者可以直接複製
-    const newUrl = location.pathname + '?room=' + roomId + location.hash;
-    history.replaceState(null, '', newUrl);
-    createdNew = true;
+  if (!FB_CONFIG) {
+    cloudConnected = false;
+    setSyncStatus('offline', '管理員尚未設定 config.js · 本機模式');
+    showSetupHint();
+    return;
   }
 
-  ROOM_ID = roomId;
-  cloudConnected = true;
-
-  // 4. 先拉一次遠端資料
-  await pullFromCloud();
-
-  // 5. 開始輪詢（每 5 秒）
-  if (pollTimer) clearInterval(pollTimer);
-  pollTimer = setInterval(pullFromCloud, 5000);
-
-  setSyncStatus('synced', '☁️ 雲端同步中 · 5 人資料互通');
-
-  // 6. 頁面切回前景時也立刻拉一次
-  document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'visible') pullFromCloud();
-  });
-
-  // 7. 如果是第一次建立房間 → 提醒使用者分享連結
-  if (createdNew) {
-    setTimeout(() => {
-      const shareBtn = document.getElementById('shareRoomBtn');
-      if (shareBtn) {
-        shareBtn.style.animation = 'pulse-share 1.2s ease-in-out 3';
+  try {
+    if (typeof firebase === 'undefined' || !firebase.initializeApp) {
+      throw new Error('Firebase SDK 未載入（網路被擋？）');
+    }
+    if (!firebase.apps || firebase.apps.length === 0) {
+      fbApp = firebase.initializeApp(FB_CONFIG);
+    } else {
+      fbApp = firebase.app();
+    }
+    fbDb = firebase.database();
+    fbRef = fbDb.ref('rooms/' + ROOM_ID);
+    attachCloudListener();
+    cloudConnected = true;
+    setSyncStatus('synced', '☁️ 雲端同步中 · 5 人即時互通');
+    if (!new URLSearchParams(location.search).get('room')) {
+      const newUrl = location.pathname + '?room=' + ROOM_ID + location.hash;
+      history.replaceState(null, '', newUrl);
+    }
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible' && fbRef) {
+        fbRef.once('value').then(snap => {
+          const remote = snap.val();
+          if (remote) {
+            allData = remote;
+            PLAYERS.forEach(p => { if (!allData[p.key]) allData[p.key] = defaultPlayerData(); });
+            renderHome();
+            if (currentPlayer) renderPlayer();
+          }
+        });
       }
-      toast('🎉 你的房間已建立！點右上「複製分享連結」給朋友');
-    }, 800);
+    });
+  } catch (e) {
+    console.error('Firebase init 失敗:', e);
+    cloudConnected = false;
+    setSyncStatus('offline', '雲端連線失敗：' + (e.message || e.code || '未知'));
+    showSetupHint();
   }
 }
 
-// 分享連結
+function showSetupHint() {
+  const banner = document.getElementById('syncBanner');
+  if (!banner) return;
+  if (document.getElementById('setupCloudBtn')) return;
+  const btn = document.createElement('button');
+  btn.id = 'setupCloudBtn';
+  btn.textContent = '☁️ 設定';
+  btn.style.cssText = 'background:var(--orange); color:white; border:none; padding:6px 14px; border-radius:6px; font-size:0.75rem; font-weight:900; cursor:pointer; margin-left:6px; font-family:inherit; box-shadow:none; min-width:auto; text-transform:none; letter-spacing:0.5px;';
+  btn.onclick = openSetupModal;
+  banner.appendChild(btn);
+}
+
+function openSetupModal() {
+  const existing = loadSavedConfig();
+  const ta = document.getElementById('fbConfigInput');
+  if (ta) ta.value = existing ? JSON.stringify(existing, null, 2) : '';
+  const err = document.getElementById('fbSetupError');
+  if (err) err.style.display = 'none';
+  document.getElementById('setupModal').style.display = 'flex';
+}
+
+function closeSetupModal() {
+  document.getElementById('setupModal').style.display = 'none';
+}
+
+function saveFirebaseConfig() {
+  const input = document.getElementById('fbConfigInput').value.trim();
+  const errBox = document.getElementById('fbSetupError');
+  errBox.style.display = 'none';
+  let config;
+  try {
+    const match = input.match(/\{[\s\S]*\}/);
+    if (!match) throw new Error('找不到 { } 格式');
+    let text = match[0];
+    text = text.replace(/([{,]\s*)([a-zA-Z_$][\w$]*)\s*:/g, '$1"$2":');
+    text = text.replace(/'/g, '"');
+    text = text.replace(/,(\s*[}\]])/g, '$1');
+    config = JSON.parse(text);
+  } catch (e) {
+    errBox.style.display = 'block';
+    errBox.textContent = '⚠️ 格式解析失敗：請貼整段 firebaseConfig = { ... } 含大括號';
+    return;
+  }
+  if (!config.apiKey || !config.databaseURL) {
+    errBox.style.display = 'block';
+    errBox.textContent = '⚠️ 缺 apiKey 或 databaseURL — 請確認啟用的是 Realtime Database 不是 Firestore';
+    return;
+  }
+  localStorage.setItem(FB_CONFIG_KEY, JSON.stringify(config));
+  closeSetupModal();
+  toast('☁️ 已儲存，正在連線...');
+  setTimeout(() => location.reload(), 500);
+}
+
+// ========== 分享連結（帶設定，朋友點了自動匯入）==========
 function copyShareLink() {
-  const url = location.origin + location.pathname + (ROOM_ID ? '?room=' + ROOM_ID : '');
+  const cfg = loadSavedConfig();
+  let url = location.origin + location.pathname + '?room=' + (ROOM_ID || 'bingo-2026');
+  if (cfg) {
+    try {
+      const encoded = btoa(JSON.stringify(cfg))
+        .replace(/\+/g,'-').replace(/\//g,'_').replace(/=/g,'');
+      url += '#fb=' + encoded;
+    } catch(e) {}
+  }
   const fallback = () => {
     const ta = document.createElement('textarea');
     ta.value = url;
@@ -1582,10 +1685,8 @@ function copyShareLink() {
   };
   if (navigator.clipboard && navigator.clipboard.writeText) {
     navigator.clipboard.writeText(url).catch(fallback);
-  } else {
-    fallback();
-  }
-  toast('📋 已複製！把連結丟到群組給大家');
+  } else { fallback(); }
+  toast(cfg ? '📋 已複製（朋友點了自動連線）' : '📋 已複製（朋友需自行設定）');
 }
 
 // ========== 連線偵測 ==========
